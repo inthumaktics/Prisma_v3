@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRISMA — Kredibilitas ESG Terverifikasi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#145858; --teal-d:#0E4443; --teal-l:#1C7B72; --teal-xl:#2E9C8F;
+  --sage:#C8E0CA; --sage-soft:#E9F2E9; --sage-2:#DBEBDC;
+  --gold:#F7B318; --gold-d:#D9990A; --gold-soft:#FEF4D8;
+  --white:#FFFFFF; --bg:#EEF4EF; --ink:#123B37; --muted:#5E7A73; --faint:#93A89F;
+  --line:#E1EBE3; --line-2:#EDF3EE;
+  --green:#2F9E6B; --amber:#F7B318; --red:#D9564C;
+  --green-soft:#E4F3EB; --amber-soft:#FEF4D8; --red-soft:#FBE6E4;
+  --ring:#E7EFE8;
+  --shadow:0 1px 2px rgba(18,59,55,.05),0 10px 26px rgba(18,59,55,.06);
+  --shadow-lg:0 26px 60px rgba(14,52,48,.24);
+  --r:20px; --r-sm:13px; --f:'Plus Jakarta Sans',sans-serif; --mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--f);background:var(--bg);color:var(--ink);font-size:13.5px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--mono)}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+a{color:inherit;text-decoration:none}
+h1,h2,h3,h4{line-height:1.18}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:#CBD8CD;border-radius:8px;border:3px solid var(--bg)}
+.app{display:flex;min-height:100vh}
+.side{width:250px;flex:none;background:var(--teal);color:#CFE4DD;padding:20px 14px;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto}
+.side::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14)}
+.brand{display:flex;align-items:center;gap:12px;padding:6px 8px 6px}
+.brand .mk{width:44px;height:44px;flex:none}
+.brand .nm{font-weight:800;font-size:22px;letter-spacing:.02em;color:#fff;line-height:1}
+.brand .sl{font-size:9.5px;color:var(--gold);letter-spacing:.05em;margin-top:4px;font-weight:600;font-style:italic}
+.navlab{font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;color:#6F9A92;font-weight:700;padding:16px 12px 7px}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:600;color:#BBD6CE;margin-bottom:2px;transition:.15s}
+.nav a svg{opacity:.75;flex:none}
+.nav a:hover{background:rgba(255,255,255,.07);color:#fff}
+.nav a.on{background:var(--gold);color:var(--teal-d);font-weight:700;box-shadow:0 8px 18px rgba(247,179,24,.3)}
+.nav a.on svg{opacity:1}
+.side .foot{margin-top:auto;padding:14px 12px 4px;font-size:10px;color:#6F9A92;line-height:1.6;border-top:1px solid rgba(255,255,255,.08)}
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.top{display:flex;align-items:center;gap:14px;padding:16px 30px;position:sticky;top:0;background:rgba(238,244,239,.85);backdrop-filter:blur(10px);z-index:30}
+.top .ttl h2{font-size:19px;font-weight:800}
+.top .ttl p{font-size:12px;color:var(--muted);margin-top:2px}
+.top .sp{flex:1}
+.searchbar{position:relative;width:270px}
+.searchbar input{width:100%;background:var(--white);border:1px solid var(--line);border-radius:12px;padding:10px 12px 10px 36px;font-size:13px;font-family:var(--f)}
+.searchbar input:focus{outline:none;border-color:var(--teal-l)}
+.searchbar svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.5}
+.iconbtn{width:40px;height:40px;border-radius:12px;background:var(--white);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:#4a5b55}
+.iconbtn:hover{background:var(--sage-soft)}
+.user{display:flex;align-items:center;gap:10px;background:var(--white);border:1px solid var(--line);border-radius:13px;padding:6px 13px 6px 6px}
+.user .av{width:30px;height:30px;border-radius:9px;background:var(--teal);color:#fff;font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center}
+.user .un{font-size:12.5px;font-weight:700;line-height:1.2}.user .ur{font-size:11px;color:var(--muted)}
+.content{padding:8px 30px 46px}
+.view{display:none;animation:fade .3s ease}.view.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.grid{display:grid;gap:18px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+.g-main{grid-template-columns:1.55fr 1fr}.g-2{grid-template-columns:1fr 1fr}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.card.p0{padding:0;overflow:hidden}
+.chead{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.chead h3{font-size:15px;font-weight:800}.chead .cap{font-size:12px;color:var(--muted);margin-top:3px}
+.pillbtn{font-size:11.5px;font-weight:700;color:var(--teal);background:var(--sage-soft);border:1px solid var(--sage-2);padding:6px 12px;border-radius:10px;cursor:pointer}
+.sec-h{margin:34px 0 16px}.sec-h .k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal-l);font-weight:700}
+.sec-h h2{font-size:22px;font-weight:800;margin-top:6px}.sec-h p{color:var(--muted);margin-top:6px;max-width:74ch}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13.5px;padding:11px 18px;border-radius:12px;transition:.15s}
+.btn.pri{background:var(--gold);color:var(--teal-d)}.btn.pri:hover{background:var(--gold-d)}
+.btn.gho{background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.3)}
+.logo-sq{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px;flex:none;font-family:var(--mono)}
+.zone{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:9px}
+.zone .d{width:7px;height:7px;border-radius:50%}
+.zone.g{background:var(--green-soft);color:#1c7a51}.zone.g .d{background:var(--green)}
+.zone.y{background:var(--amber-soft);color:#a8790d}.zone.y .d{background:var(--amber)}
+.zone.r{background:var(--red-soft);color:#b23d34}.zone.r .d{background:var(--red)}
+.hero{position:relative;border-radius:26px;overflow:hidden;box-shadow:var(--shadow);min-height:340px;display:flex;align-items:stretch}
+.hero .scene{position:absolute;inset:0;width:100%;height:100%}
+.hero .glass{position:relative;z-index:2;margin:26px;max-width:560px;background:rgba(255,255,255,.14);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.28);border-radius:20px;padding:28px 30px;color:#fff;align-self:center}
+.hero .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;background:rgba(247,179,24,.92);color:var(--teal-d);padding:6px 12px;border-radius:99px}
+.hero h1{font-size:38px;font-weight:800;line-height:1.08;margin:16px 0 10px;letter-spacing:-.01em}
+.hero p{font-size:14px;color:#EAF3EE;max-width:46ch;line-height:1.6}
+.hero .cta{display:flex;gap:12px;margin-top:20px;flex-wrap:wrap}
+.hero .chip-stat{position:absolute;z-index:2;right:30px;top:30px;background:rgba(255,255,255,.16);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.3);border-radius:18px;padding:16px 20px;color:#fff;text-align:center}
+.hero .chip-stat .n{font-size:34px;font-weight:800;line-height:1}.hero .chip-stat .l{font-size:11px;color:#DCEEE6;margin-top:6px;max-width:150px}
+.about-card{background:var(--white);border:1px solid var(--line);border-radius:var(--r);padding:22px;box-shadow:var(--shadow)}
+.about-card .ic{width:46px;height:46px;border-radius:14px;background:var(--sage-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.about-card h4{font-size:15px;font-weight:800;margin-bottom:7px}.about-card p{font-size:12.5px;color:var(--muted);line-height:1.6}
+.how{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.how .s{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:var(--shadow);position:relative}
+.how .s .n{font-family:var(--mono);font-weight:700;color:var(--gold-d);font-size:13px;background:var(--gold-soft);width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:11px}
+.how .s h4{font-size:13.5px;font-weight:800;margin-bottom:6px}.how .s p{font-size:12px;color:var(--muted);line-height:1.55}
+.contact{background:linear-gradient(150deg,var(--teal),var(--teal-d));border-radius:24px;padding:34px;color:#DCECE6;display:grid;grid-template-columns:1fr 1.1fr;gap:34px;box-shadow:var(--shadow)}
+.contact h3{color:#fff;font-size:22px;font-weight:800;margin-bottom:10px}
+.contact .lead{font-size:13px;color:#B6D2CA;line-height:1.6;max-width:40ch}
+.contact .ci{display:flex;align-items:center;gap:12px;margin-top:18px;font-size:13px}
+.contact .ci .ic{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;flex:none}
+.contact .ci b{color:#fff;font-weight:600}
+.cform{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:22px}
+.cform label{font-size:11.5px;font-weight:600;color:#BFD8D0;display:block;margin:12px 0 6px}
+.cform input,.cform textarea{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);border-radius:11px;padding:11px 13px;color:#fff;font-family:var(--f);font-size:13px}
+.cform input::placeholder,.cform textarea::placeholder{color:#8FB2AA}
+.cform input:focus,.cform textarea:focus{outline:none;border-color:var(--gold)}
+.socials{display:flex;gap:10px;margin-top:16px}
+.socials a{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center}
+.socials a:hover{background:var(--gold);color:var(--teal-d)}
+.kpi{display:flex;align-items:center;gap:15px}
+.kpi .ico{width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex:none}
+.kpi .lbl{font-size:12px;color:var(--muted);font-weight:600}
+.kpi .big{font-size:27px;font-weight:800;line-height:1.05;margin-top:3px;font-variant-numeric:tabular-nums}
+.kpi .big small{font-size:14px;color:var(--faint);font-weight:600}
+.kpi .delta{font-size:11.5px;font-weight:700;margin-top:4px}
+.up{color:var(--green)}.dn{color:var(--red)}.fl{color:var(--muted)}
+.ringwrap{position:relative;width:56px;height:56px;flex:none}.ringwrap .rv{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800}
+.trend-svg{width:100%;height:190px;display:block}
+.tlabels{display:flex;justify-content:space-between;font-size:10px;color:var(--faint);margin-top:6px;font-family:var(--mono)}
+.donut-wrap{display:flex;align-items:center;gap:22px}
+.leg{display:flex;flex-direction:column;gap:12px}.leg .it{display:flex;align-items:center;gap:10px;font-size:12.5px;color:#3f4b41}
+.leg .sw{width:11px;height:11px;border-radius:4px;flex:none}.leg b{font-weight:700}.leg .pc{color:var(--muted);margin-left:auto;font-family:var(--mono);font-size:12px}
+.sbar{display:flex;align-items:center;gap:12px;margin-bottom:13px}.sbar .nm{width:150px;font-size:12.5px;color:#3f4b41;flex:none}
+.sbar .tk{flex:1;height:8px;border-radius:99px;background:var(--ring);overflow:hidden}.sbar .tk i{display:block;height:100%;border-radius:99px}
+.sbar .v{width:30px;text-align:right;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.mv{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-2);cursor:pointer}.mv:last-child{border:none}
+.mv .info{flex:1;min-width:0}.mv .tk{font-weight:700;font-size:13px;font-family:var(--mono)}.mv .nm{font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mv .d{font-family:var(--mono);font-weight:700;font-size:13px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:16px}
+.chip{font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:11px;border:1px solid var(--line);background:var(--white);color:#46564f}
+.chip:hover{border-color:#C4D2C6}
+.chip.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+.chip.on.g{background:var(--green);border-color:var(--green)}.chip.on.y{background:var(--gold);border-color:var(--gold);color:var(--teal-d)}.chip.on.r{background:var(--red);border-color:var(--red)}
+select.sel{font-family:var(--f);font-size:12.5px;padding:8px 12px;border-radius:11px;border:1px solid var(--line);background:var(--white);color:#46564f}
+.toolbar .rt{margin-left:auto;font-size:12.5px;color:var(--muted)}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:700;text-align:left;padding:14px 18px;background:#FAFCFA;border-bottom:1px solid var(--line);cursor:pointer;white-space:nowrap;user-select:none}
+thead th.num{text-align:right}thead th .ar{opacity:.3;font-size:9px;margin-left:2px}thead th.sorted .ar{opacity:1;color:var(--teal-l)}
+tbody tr{border-bottom:1px solid var(--line-2);cursor:pointer;transition:background .12s}tbody tr:last-child{border:none}tbody tr:hover{background:#FAFCFB}
+td{padding:13px 18px;vertical-align:middle}
+.emi{display:flex;align-items:center;gap:12px}.emi .tk{font-family:var(--mono);font-weight:700;font-size:13px}.emi .nm{font-size:11.5px;color:var(--muted);line-height:1.25}
+.sect{font-size:11.5px;color:#46564f;background:var(--bg);border:1px solid var(--line);padding:4px 10px;border-radius:8px;white-space:nowrap}
+.scorec{display:flex;align-items:center;gap:11px;min-width:150px}.scorec .v{font-weight:800;font-size:18px;width:30px;text-align:right;font-variant-numeric:tabular-nums}
+.scorec .tk{flex:1;height:6px;border-radius:99px;background:var(--ring);overflow:hidden;min-width:60px}.scorec .tk i{display:block;height:100%;border-radius:99px}
+.num{text-align:right;font-family:var(--mono);font-size:13px}.tr{font-family:var(--mono);font-weight:700;font-size:12.5px}
+.chev{color:var(--faint)}
+.flag{display:flex;gap:16px;align-items:center;background:var(--white);border:1px solid var(--line);border-left:4px solid var(--red);border-radius:15px;padding:16px 18px;margin-bottom:12px;box-shadow:var(--shadow);cursor:pointer;transition:.12s}
+.flag:hover{transform:translateX(2px)}
+.flag .pr{font-family:var(--mono);font-size:11px;font-weight:700;color:#b23d34;background:var(--red-soft);border-radius:10px;padding:9px 11px;text-align:center;line-height:1.2;flex:none}
+.flag .bd{flex:1;min-width:0}.flag .t{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.flag .rs{font-size:12.5px;color:#4b5750;margin-top:6px}
+.flag .sc{font-weight:800;font-size:24px;color:var(--red);flex:none}
+.steps{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.stp{background:var(--white);border:1px solid var(--line);border-radius:15px;padding:18px;box-shadow:var(--shadow)}
+.stp .n{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--teal);background:var(--sage-soft);width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.stp h4{font-size:14.5px;font-weight:800;margin-bottom:6px}.stp p{font-size:12.5px;color:var(--muted);line-height:1.55}
+.prin{display:grid;grid-template-columns:1fr 1fr;gap:11px 26px}
+.prin .p{display:flex;gap:11px;align-items:flex-start;font-size:13px;color:#3f4b41}
+.prin .p .c{width:22px;height:22px;border-radius:7px;background:var(--sage-soft);color:var(--teal);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex:none;font-family:var(--mono)}
+.note{background:var(--sage-soft);border:1px solid var(--sage-2);border-radius:13px;padding:14px 16px;font-size:12.5px;color:#2e4d43;margin-top:16px}
+.cmp-top{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;margin-bottom:18px}
+.cmp-sel{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+.cmp-sel select{width:100%;font-family:var(--f);font-size:14px;font-weight:700;border:none;background:none;color:var(--ink);margin-top:8px}
+.vs{width:46px;height:46px;border-radius:50%;background:var(--gold);color:var(--teal-d);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:14px}
+.cmp-body{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.cmp-card{text-align:center}.cmp-card .big{font-size:46px;font-weight:800;line-height:1}
+.mapwrap{position:relative;background:linear-gradient(160deg,#EAF3EC,#F5FAF5);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+.mapdot{cursor:pointer;transition:.15s}.mapdot:hover{stroke:var(--teal-d);stroke-width:2}
+.maplist .m{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2);cursor:pointer}.maplist .m:last-child{border:none}
+.maplist .m .info{flex:1}.maplist .m .em{font-weight:700;font-size:12.5px}.maplist .m .ee{font-size:11px;color:var(--muted)}
+.maplist .m .val{font-family:var(--mono);font-size:12px;font-weight:600}
+.cst-tag{font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:8px;white-space:nowrap}
+.cst-tag.ok{background:var(--green-soft);color:#1c7a51}.cst-tag.dup{background:var(--red-soft);color:#b23d34}.cst-tag.rej{background:var(--amber-soft);color:#a8790d}
+.lit-hero{display:grid;grid-template-columns:1.3fr 1fr;gap:0;border-radius:20px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);margin-bottom:8px}
+.lit-hero .l{background:linear-gradient(150deg,var(--teal),var(--teal-l));color:#fff;padding:34px}
+.lit-hero .l .k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.lit-hero .l h3{font-size:26px;font-weight:800;margin:12px 0 10px}.lit-hero .l p{color:#CFE6DE;font-size:13px;line-height:1.6;max-width:44ch}
+.lit-hero .r{background:var(--sage);position:relative;min-height:220px;display:flex;align-items:center;justify-content:center}
+.play{width:74px;height:74px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.16)}
+.artgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.art{background:var(--white);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:.15s}
+.art:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.art .thumb{height:110px;display:flex;align-items:flex-end;padding:12px}
+.art .cat{font-size:10.5px;font-weight:700;background:rgba(255,255,255,.9);color:var(--teal);padding:4px 9px;border-radius:8px}
+.art .b{padding:14px 16px}.art .b h4{font-size:14px;font-weight:800;line-height:1.3}.art .b .meta{font-size:11px;color:var(--muted);margin-top:8px;display:flex;gap:10px}
+.vidgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.vid{border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow);cursor:pointer;background:var(--white)}
+.vid .th{height:96px;position:relative;display:flex;align-items:center;justify-content:center}
+.vid .th .pl{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}
+.vid .th .dur{position:absolute;right:8px;bottom:8px;background:rgba(18,59,55,.8);color:#fff;font-size:10px;font-family:var(--mono);padding:2px 6px;border-radius:6px}
+.vid .b{padding:11px 13px;font-size:12.5px;font-weight:700}
+.gloss .item{border-bottom:1px solid var(--line-2)}
+.gloss .q{width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center;padding:15px 4px;font-weight:700;font-size:13.5px}
+.gloss .q .ic{color:var(--teal-l);transition:.2s}.gloss .item.open .q .ic{transform:rotate(45deg)}
+.gloss .a{max-height:0;overflow:hidden;transition:max-height .25s;font-size:12.5px;color:var(--muted);line-height:1.6}
+.gloss .item.open .a{max-height:180px;padding-bottom:14px}
+.srcrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line-2)}.srcrow:last-child{border:none}
+.srcrow .ic{width:36px;height:36px;border-radius:10px;background:var(--sage-soft);display:flex;align-items:center;justify-content:center;flex:none}
+.srcrow .info{flex:1}.srcrow .nm{font-weight:700;font-size:12.5px}.srcrow .og{font-size:11px;color:var(--muted)}
+.srcrow .go{font-size:11px;font-weight:700;color:var(--teal-l)}
+.scrim{position:fixed;inset:0;background:rgba(14,52,48,.42);z-index:60;opacity:0;pointer-events:none;transition:.25s}.scrim.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:540px;max-width:95vw;background:var(--bg);z-index:70;transform:translateX(100%);transition:transform .32s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:var(--shadow-lg)}.drawer.on{transform:none}
+.dh{background:linear-gradient(150deg,var(--teal),var(--teal-d));color:#EAF7F0;padding:22px 26px 24px;position:sticky;top:0;z-index:2}
+.dh .close{position:absolute;top:18px;right:18px;width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,.12);display:flex;align-items:center;justify-content:center}.dh .close:hover{background:rgba(255,255,255,.22)}
+.dh .row1{display:flex;align-items:center;gap:14px}.dh h2{font-size:19px;font-weight:800;margin-top:2px}
+.dh .tk{font-family:var(--mono);font-weight:700;font-size:13px;color:var(--gold)}.dh .meta{font-size:12px;color:#B4D4C4;margin-top:2px}
+.db{padding:22px 26px 44px}.dsec{margin-bottom:24px}
+.dsec .st{font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px}
+.scorecard{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.scorecard .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+.scorecard .sv{font-size:50px;font-weight:800;line-height:.9;font-variant-numeric:tabular-nums}.scorecard .sv small{font-size:17px;color:var(--faint);font-weight:600}
+.spectrum{height:9px;border-radius:99px;background:linear-gradient(90deg,var(--red) 0%,var(--gold) 52%,var(--green) 100%);position:relative}
+.gsc{position:relative}.gsc .mk{position:absolute;top:-4px;width:3px;height:17px;background:var(--ink);border-radius:2px;transform:translateX(-50%)}
+.gsc .tk2{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10px;color:var(--faint);margin-top:8px}
+.gap{margin-bottom:16px}.gap .gl{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;margin-bottom:6px}
+.gap .gl b{font-weight:700}.gap .gl .ax{font-size:10.5px;color:var(--faint);font-weight:600}.gap .gl .gv{font-family:var(--mono);color:var(--muted)}
+.gap .gt{height:11px;border-radius:99px;background:var(--ring);position:relative;overflow:hidden}.gap .gt i{display:block;height:100%;border-radius:99px}
+.gap .ci{position:absolute;top:-3px;height:17px;background:rgba(18,52,46,.1);border-left:1px dashed #7f8f85;border-right:1px dashed #7f8f85}.gap .hint{font-size:11px;color:var(--faint);margin-top:5px}
+.evg{display:grid;grid-template-columns:1fr 1fr;gap:11px}.ev{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:13px 14px;box-shadow:var(--shadow)}
+.ev .en{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:700}.ev .ic{width:28px;height:28px;border-radius:8px;background:var(--sage-soft);display:flex;align-items:center;justify-content:center;flex:none}
+.ev .ed{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5}
+.claim{background:var(--white);border:1px solid var(--line);border-radius:12px;padding:12px 15px;margin-bottom:9px;display:flex;gap:12px;align-items:flex-start;box-shadow:var(--shadow)}
+.claim .ct{flex:1;font-size:12.5px;color:#37433a;line-height:1.5}
+.cst{font-size:10px;font-weight:700;padding:4px 9px;border-radius:8px;white-space:nowrap;flex:none}
+.cst.ok{background:var(--green-soft);color:#1c7a51}.cst.div{background:var(--red-soft);color:#b23d34}.cst.ret{background:var(--amber-soft);color:#a8790d}
+.ledger{background:var(--teal-d);border-radius:13px;padding:16px;color:#B9CEC2;font-family:var(--mono);font-size:11.5px;line-height:1.8;word-break:break-all}
+.ledger .r{display:flex;gap:10px}.ledger .k{color:#6E8579;width:80px;flex:none}.ledger .v{color:var(--gold)}
+.sparkc{background:var(--white);border:1px solid var(--line);border-radius:13px;padding:14px 16px;box-shadow:var(--shadow)}
+.modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:24px}
+.modal.on{display:flex}.modal .mbg{position:absolute;inset:0;background:rgba(14,52,48,.5)}
+.modal .mcard{position:relative;background:var(--white);border-radius:20px;max-width:560px;width:100%;max-height:88vh;overflow:auto;box-shadow:var(--shadow-lg)}
+.modal .mtop{height:150px;display:flex;align-items:flex-end;padding:18px}
+.modal .mb{padding:22px 26px 28px}.modal .mb h3{font-size:20px;font-weight:800;margin-bottom:10px}.modal .mb p{font-size:13px;color:#455;line-height:1.7;margin-bottom:12px}
+.modal .close2{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.art .cat{white-space:nowrap}
+.toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--teal);color:#fff;padding:13px 22px;border-radius:12px;font-weight:600;font-size:13px;opacity:0;pointer-events:none;transition:.3s;z-index:90}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.disc{font-size:11px;color:var(--faint);margin-top:24px;border-top:1px solid var(--line);padding-top:14px;line-height:1.6}
+.menu-btn{display:none}
+@media(max-width:1120px){.g4{grid-template-columns:repeat(2,1fr)}.g-main,.g3,.g-2,.cmp-body,.contact,.lit-hero{grid-template-columns:1fr}.how,.artgrid{grid-template-columns:1fr 1fr}.vidgrid{grid-template-columns:1fr 1fr}.steps,.prin{grid-template-columns:1fr}.cmp-top{grid-template-columns:1fr}.vs{display:none}}
+@media(max-width:860px){.side{position:fixed;left:0;top:0;z-index:50;transform:translateX(-100%);transition:.25s}.side.open{transform:none}.menu-btn{display:flex}.searchbar{display:none}.content{padding:8px 16px 40px}.top{padding:14px 16px}.hero h1{font-size:28px}.how,.artgrid,.vidgrid{grid-template-columns:1fr}th.hide,td.hide{display:none}.hero .chip-stat{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side" id="side">
+    <div class="brand">
+      <svg class="mk" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="23" fill="#0E4443"/>
+        <path d="M24 11 L36 33 H12 Z" fill="none" stroke="#C8E0CA" stroke-width="1.6"/>
+        <path d="M18 11 L24 11" stroke="#F7B318" stroke-width="2" stroke-linecap="round"/>
+        <path d="M24 11 L30 20" stroke="#fff" stroke-width="1.4" opacity=".5"/>
+        <path d="M12 33 L18 24" stroke="#F7B318" stroke-width="1.6" opacity=".85"/>
+        <circle cx="16.5" cy="35.5" r="1.7" fill="#D9564C"/>
+        <circle cx="24" cy="35.5" r="1.7" fill="#F7B318"/>
+        <circle cx="31.5" cy="35.5" r="1.7" fill="#2F9E6B"/>
+      </svg>
+      <div><div class="nm">PRISMA</div><div class="sl">Kejujuran yang Terverifikasi</div></div>
+    </div>
+    <div class="navlab">Utama</div>
+    <nav class="nav"><a class="on" data-v="home" onclick="go(this)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2.5 8L9 2.5 15.5 8M4 7v8h10V7"/></svg>Beranda</a></nav>
+    <div class="navlab">Pasar</div>
+    <nav class="nav">
+      <a data-v="dash" onclick="go(this)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 15V8M9 15V3M15 15v-5"/></svg>Ringkasan Pasar</a>
+      <a data-v="board" onclick="go(this)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 4h12M3 9h9M3 14h6"/></svg>Peringkat Kredibilitas</a>
+      <a data-v="compare" onclick="go(this)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2v14M5 6L2 9l3 3M13 6l3 3-3 3"/></svg>Bandingkan Emiten</a>
+    </nav>
+    <div class="navlab">Bukti & Pengawasan</div>
+    <nav class="nav">
+      <a data-v="map" onclick="go(this)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 16s6-5.2 6-9.5A6 6 0 003 6.5C3 10.8 9 16 9 16z"/><circle cx="9" cy="6.5" r="2"/></svg>Peta Emisi</a>
+      <a data-v="carbon" onclick="go(this)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2C6 6 12 8 9 12M9 2C12 6 6 8 9 12M9 12v4"/></svg>Kredit Karbon</a>
+      <a data-v="ojk" onclick="go(this)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2l5.5 2.2v4c0 3.4-2.3 6.3-5.5 7.4C5.8 14.5 3.5 11.6 3.5 8.2v-4z"/></svg>Panel OJK</a>
+    </nav>
+    <div class="navlab">Edukasi</div>
+    <nav class="nav">
+      <a data-v="lit" onclick="go(this)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 4C7 2.5 4 2.5 2.5 3.5v10C4 12.5 7 12.5 9 14M9 4c2-1.5 5-1.5 6.5-.5v10C14 12.5 11 12.5 9 14M9 4v10"/></svg>Ruang Literasi</a>
+      <a data-v="method" onclick="go(this)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="9" r="6.5"/><path d="M9 6v.01M9 8.5v3.5"/></svg>Metodologi</a>
+    </nav>
+    <div class="foot">Prototipe konsep · Berizin OJK · Terintegrasi IDX/BEI<br>Data emiten bersifat ilustratif.</div>
+  </aside>
+  <div class="main">
+    <div class="top">
+      <button class="menu-btn iconbtn" onclick="document.getElementById('side').classList.toggle('open')"><svg width="18" height="18" viewBox="0 0 18 18" stroke="currentColor" stroke-width="1.7"><path d="M3 5h12M3 9h12M3 13h12"/></svg></button>
+      <div class="ttl"><h2 id="pgTitle">Beranda</h2><p id="pgSub">Lembaga Verifikasi Kredibilitas ESG Independen</p></div>
+      <div class="sp"></div>
+      <div class="searchbar"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="7" cy="7" r="4.5"/><path d="M11 11l3 3"/></svg><input id="q" placeholder="Cari emiten…" oninput="if(curView==='board')renderBoard()"></div>
+      <button class="iconbtn"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 2a4 4 0 014 4c0 4 2 5 2 5H3s2-1 2-5a4 4 0 014-4zM7.5 15a1.5 1.5 0 003 0"/></svg></button>
+      <div class="user"><div class="av">AJ</div><div><div class="un">Analis OJK</div><div class="ur">Pengawasan</div></div></div>
+    </div>
+    <div class="content">
+      <section class="view on" id="v-home">
+        <div class="hero">
+          <svg class="scene" viewBox="0 0 900 360" preserveAspectRatio="xMidYMid slice">
+            <defs><linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1C7B72"/><stop offset="1" stop-color="#5FB6A8"/></linearGradient><linearGradient id="sun" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFD873"/><stop offset="1" stop-color="#F7B318"/></linearGradient></defs>
+            <rect width="900" height="360" fill="url(#sky)"/>
+            <circle cx="670" cy="120" r="58" fill="url(#sun)" opacity=".92"/><circle cx="670" cy="120" r="82" fill="#F7B318" opacity=".14"/>
+            <path d="M0 250 L150 150 L300 240 L430 140 L560 235 L720 155 L900 245 V360 H0 Z" fill="#0E4443" opacity=".55"/>
+            <path d="M0 285 L180 205 L340 280 L500 200 L660 275 L820 210 L900 265 V360 H0 Z" fill="#145858" opacity=".8"/>
+            <path d="M0 330 Q220 275 450 320 T900 315 V360 H0 Z" fill="#C8E0CA"/>
+            <g fill="#0E4443" opacity=".8"><path d="M120 330 l14 -34 14 34 z"/><path d="M120 318 l12 -26 12 26 z"/><path d="M170 336 l11 -26 11 26 z"/><path d="M700 322 l16 -38 16 38 z"/><path d="M760 330 l12 -28 12 28 z"/><path d="M60 336 l10 -22 10 22 z"/></g>
+          </svg>
+          <div class="chip-stat"><div class="n">63<span style="font-size:16px;opacity:.7">/100</span></div><div class="l">Skor kredibilitas rata-rata pasar</div></div>
+          <div class="glass">
+            <span class="eyebrow"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M6 1l3 1.3v2.5C9 6.9 7.7 8.5 6 9 4.3 8.5 3 6.9 3 4.8V2.3z"/></svg>Berizin OJK · Terintegrasi IDX/BEI</span>
+            <h1>Kejujuran yang Terverifikasi.</h1>
+            <p>PRISMA memeringkat pasar modal Indonesia menurut kredibilitas klaim ESG-nya — memverifikasi laporan terhadap bukti eksternal, bukan sekadar narasi perusahaan.</p>
+            <div class="cta"><button class="btn pri" onclick="document.querySelector('[data-v=board]').click()">Lihat Peringkat →</button><button class="btn gho" onclick="document.querySelector('[data-v=method]').click()">Bagaimana Cara Kerjanya</button></div>
+          </div>
+        </div>
+        <div class="sec-h"><div class="k">Tentang PRISMA</div><h2>Siapa & apa itu PRISMA</h2><p>Sebuah lembaga verifikasi kredibilitas ESG independen — diposisikan seperti lembaga pemeringkat efek (PEFINDO), namun yang dinilai bukan kemampuan bayar utang, melainkan kejujuran klaim keberlanjutan.</p></div>
+        <div class="grid g4">
+          <div class="about-card"><div class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#145858" stroke-width="1.7"><path d="M11 3l7 3v5c0 4.2-3 7.8-7 9-4-1.2-7-4.8-7-9V6z"/></svg></div><h4>Independen</h4><p>Berdiri di luar emiten, IDX, dan OJK; wajib berizin OJK. Yang menilai tidak boleh dinilai.</p></div>
+          <div class="about-card"><div class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#145858" stroke-width="1.7"><path d="M3 14l5-5 3 3 5-6"/><path d="M3 18h16"/></svg></div><h4>Terukur</h4><p>Menghitung <b>Kesenjangan Kredibilitas</b> — jarak klaim vs realitas — pada dua sumbu materialitas: finansial & dampak.</p></div>
+          <div class="about-card"><div class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#145858" stroke-width="1.7"><circle cx="11" cy="11" r="3"/><path d="M11 2v3M11 17v3M2 11h3M17 11h3"/></svg></div><h4>Berbasis Bukti</h4><p>AI membandingkan klaim dengan citra satelit Climate TRACE & sanksi KLHK; blockchain menjamin integritas datanya.</p></div>
+          <div class="about-card"><div class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#145858" stroke-width="1.7"><path d="M4 11h14M11 4v14" stroke-linecap="round"/></svg></div><h4>Untuk Publik</h4><p>Skor 0–100 tayang terbuka di sistem keterbukaan informasi BEI dan menjadi prioritas pengawasan OJK.</p></div>
+        </div>
+        <div class="sec-h"><div class="k">Cara Kerja</div><h2>Dari klaim menuju kepercayaan, dalam empat langkah</h2></div>
+        <div class="how">
+          <div class="s"><div class="n">01</div><h4>Tarik bukti eksternal</h4><p>Laporan emiten + emisi satelit + rekam sanksi ditarik tanpa meminta data dari perusahaan.</p></div>
+          <div class="s"><div class="n">02</div><h4>Kunci integritas</h4><p>Setiap data di-hash & di-timestamp pada ledger; tak bisa diubah, tak ada perhitungan ganda.</p></div>
+          <div class="s"><div class="n">03</div><h4>Ukur kesenjangan</h4><p>AI mengukur gap finansial & gap dampak sekaligus, lengkap dengan tingkat keyakinan.</p></div>
+          <div class="s"><div class="n">04</div><h4>Terbitkan skor</h4><p>ESG Credibility Score publik menggerakkan investor & pengawasan berbasis risiko OJK.</p></div>
+        </div>
+        <div class="sec-h" id="kontak"><div class="k">Hubungi Kami</div><h2>Kontak PRISMA</h2></div>
+        <div class="contact">
+          <div>
+            <h3>Mari wujudkan pasar yang berintegritas.</h3>
+            <p class="lead">Untuk kemitraan data, kolaborasi riset, atau pertanyaan regulator, tim kami siap membantu.</p>
+            <div class="ci"><span class="ic"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.5"><rect x="2" y="4" width="14" height="10" rx="2"/><path d="M2.5 5l6.5 5 6.5-5"/></svg></span><div>Surel<br><b>halo@prisma.id</b></div></div>
+            <div class="ci"><span class="ic"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.5"><path d="M3 4c0 7 4 11 11 11l1.5-3-3.5-1.5-1 1.2A9 9 0 016.3 8l1.2-1L6 3.5 3 4z"/></svg></span><div>Telepon<br><b>+62 21 500 8888</b></div></div>
+            <div class="ci"><span class="ic"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#fff" stroke-width="1.5"><path d="M9 16s6-5.2 6-9.5A6 6 0 003 6.5C3 10.8 9 16 9 16z"/><circle cx="9" cy="6.5" r="2"/></svg></span><div>Kantor<br><b>Kawasan Bursa Efek Indonesia, Jakarta</b></div></div>
+            <div class="socials">
+              <a href="#" onclick="return false"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M6 13V8H4V6h2V4.5C6 2.8 7 2 8.6 2c.7 0 1.4.1 1.4.1V4H9c-.8 0-1 .5-1 1v1h2l-.3 2H8v5z"/></svg></a>
+              <a href="#" onclick="return false"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M13 4.3c-.4.2-.8.3-1.2.4.4-.3.8-.7.9-1.2-.4.3-.9.4-1.4.6A2.2 2.2 0 008.5 5c0 .2 0 .4.1.5-1.8-.1-3.5-1-4.6-2.4-.2.3-.3.7-.3 1.1 0 .8.4 1.4 1 1.8-.4 0-.7-.1-1-.3 0 1.1.8 2 1.8 2.2-.2.1-.4.1-.6.1h-.4c.3.9 1.1 1.5 2 1.5A4.4 4.4 0 013 11.5c1 .6 2.1 1 3.3 1 4 0 6.1-3.3 6.1-6.1v-.3c.4-.3.8-.7 1.1-1.1z"/></svg></a>
+              <a href="#" onclick="return false"><svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M4 6h2v7H4zM5 3a1.2 1.2 0 100 2.4A1.2 1.2 0 005 3zM8 6h2v1c.3-.6 1.1-1.1 2-1.1 2 0 2.5 1.2 2.5 3V13h-2V9.3c0-.9-.3-1.5-1.1-1.5-.6 0-1 .4-1.2 .9-.1.2-.1.4-.1.6V13H8z"/></svg></a>
+            </div>
+          </div>
+          <div class="cform">
+            <label>Nama</label><input placeholder="Nama Anda">
+            <label>Surel</label><input placeholder="nama@surel.com">
+            <label>Pesan</label><textarea rows="3" placeholder="Tulis pesan Anda…"></textarea>
+            <button class="btn pri" style="margin-top:16px;width:100%;justify-content:center" onclick="toast('Terima kasih! Pesan Anda terkirim (prototipe).')">Kirim Pesan</button>
+          </div>
+        </div>
+        <p class="disc">PRISMA adalah gagasan/prototipe konsep untuk esai ilmiah. Nama, kontak, dan data emiten bersifat ilustratif.</p>
+      </section>
+
+      <section class="view" id="v-dash">
+        <div class="grid g4" style="margin-bottom:18px" id="kpis"></div>
+        <div class="grid g-main" style="margin-bottom:18px">
+          <div class="card"><div class="chead"><div><h3>Tren Kredibilitas Pasar</h3><div class="cap">Skor rata-rata tertimbang, 12 periode</div></div><span class="pillbtn">2025–2026</span></div><div id="trend"></div></div>
+          <div class="card"><div class="chead"><div><h3>Distribusi Zona</h3><div class="cap">Proporsi emiten per tingkat kredibilitas</div></div></div><div class="donut-wrap"><svg width="150" height="150" viewBox="0 0 42 42" id="donut"></svg><div class="leg" id="donutLeg"></div></div></div>
+        </div>
+        <div class="grid g3">
+          <div class="card"><div class="chead"><div><h3>Rata-rata per Sektor</h3><div class="cap">Sektor padat emisi cenderung lebih rendah</div></div></div><div id="sectors"></div></div>
+          <div class="card"><div class="chead"><div><h3>Pergerakan Terbesar</h3><div class="cap">Perubahan skor periode ini</div></div></div><div id="movers"></div></div>
+          <div class="card"><div class="chead"><div><h3>Peringkat Teratas</h3><div class="cap">Kredibilitas tertinggi</div></div><span class="pillbtn" onclick="document.querySelector('[data-v=board]').click()">Semua</span></div><div id="miniboard"></div></div>
+        </div>
+      </section>
+
+      <section class="view" id="v-board">
+        <div class="toolbar">
+          <button class="chip on" data-z="all" onclick="setZone(this)">Semua</button>
+          <button class="chip" data-z="g" onclick="setZone(this)">Hijau 75–100</button>
+          <button class="chip" data-z="y" onclick="setZone(this)">Kuning 50–74</button>
+          <button class="chip" data-z="r" onclick="setZone(this)">Merah 0–49</button>
+          <select class="sel" id="secSel" onchange="renderBoard()"><option value="all">Semua sektor</option></select>
+          <div class="rt" id="count"></div>
+        </div>
+        <div class="card p0"><table><thead><tr>
+          <th style="width:36px">#</th><th data-k="name">Emiten <span class="ar">▲▼</span></th>
+          <th class="hide" data-k="sec">Sektor</th><th data-k="score" class="sorted">Skor Kredibilitas <span class="ar">▼</span></th>
+          <th data-k="zone">Zona</th><th class="num hide" data-k="fin">Gap Finansial <span class="ar">▲▼</span></th>
+          <th class="num hide" data-k="imp">Gap Dampak <span class="ar">▲▼</span></th><th class="num" data-k="trend">Tren <span class="ar">▲▼</span></th><th class="hide"></th>
+        </tr></thead><tbody id="rows"></tbody></table></div>
+        <p class="disc">Skor dari <b>Kesenjangan Kredibilitas</b> dua-sumbu, dibobot menurut 8 Prinsip Keuangan Berkelanjutan POJK 51/2017, diuji terhadap bukti eksternal yang di-<i>hash</i> pada <i>ledger</i>. Data ilustratif.</p>
+      </section>
+
+      <section class="view" id="v-compare">
+        <div class="cmp-top">
+          <div class="cmp-sel"><div style="font-size:11px;color:var(--muted);font-weight:700">EMITEN A</div><select id="cmpA" onchange="renderCompare()"></select></div>
+          <div class="vs">VS</div>
+          <div class="cmp-sel"><div style="font-size:11px;color:var(--muted);font-weight:700">EMITEN B</div><select id="cmpB" onchange="renderCompare()"></select></div>
+        </div>
+        <div class="card"><div id="cmpBody"></div></div>
+        <p class="disc">Perbandingan berdampingan membantu investor memilih di antara emiten sejenis berdasarkan <b>kredibilitas</b>, bukan sekadar kinerja yang diklaim.</p>
+      </section>
+
+      <section class="view" id="v-map">
+        <div class="grid" style="grid-template-columns:1.6fr 1fr;gap:18px">
+          <div class="card">
+            <div class="chead"><div><h3>Peta Emisi Fasilitas</h3><div class="cap">Titik emisi terpantau satelit — sumber: Climate TRACE (ilustratif)</div></div>
+              <div style="display:flex;gap:12px;font-size:11px;color:var(--muted)"><span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--green);margin-right:5px"></span>Kredibel</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--amber);margin-right:5px"></span>Perhatian</span><span><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--red);margin-right:5px"></span>Divergen</span></div></div>
+            <div class="mapwrap"><svg viewBox="0 0 900 420" style="width:100%;display:block" id="mapSvg"></svg></div>
+          </div>
+          <div class="card"><div class="chead"><div><h3>Fasilitas Terpantau</h3><div class="cap">Diurutkan menurut estimasi emisi</div></div></div><div class="maplist" id="mapList"></div></div>
+        </div>
+        <p class="disc">Ukuran titik mencerminkan estimasi emisi; warna mencerminkan zona kredibilitas emiten. Divergensi antara emisi tercitra dan yang dilaporkan menaikkan <b>gap dampak</b>. Posisi geografis bersifat ilustratif.</p>
+      </section>
+
+      <section class="view" id="v-carbon">
+        <div class="grid g4" style="margin-bottom:18px" id="carbonKpi"></div>
+        <div class="card p0">
+          <div style="padding:18px 20px;border-bottom:1px solid var(--line)"><h3 style="font-size:15px;font-weight:800">Registri Kredit Karbon Terverifikasi — IDXCarbon</h3><div class="cap" style="margin-top:3px">Setiap unit di-<i>hash</i> pada <i>ledger</i>; duplikasi otomatis ditandai (pendekatan <i>nesting</i>, Perpres 110/2025).</div></div>
+          <table><thead><tr><th>Proyek</th><th class="hide">Jenis</th><th class="num">Volume (tCO₂e)</th><th class="num hide">Harga</th><th>Status</th><th class="hide">Hash</th></tr></thead><tbody id="carbonRows"></tbody></table>
+        </div>
+        <div class="note" style="margin-top:16px"><b>Mengapa penting.</b> Semakin besar pasar karbon yang dibangun di atas data emisi yang dilaporkan sendiri, semakin tinggi risiko sistemik bila data tak kredibel. Blockchain PRISMA mencegah satu kredit dihitung dua kali di dua sistem berbeda.</div>
+      </section>
+
+      <section class="view" id="v-ojk">
+        <div class="card" style="margin-bottom:18px;display:flex;gap:16px;align-items:center">
+          <div style="width:46px;height:46px;border-radius:14px;background:var(--red-soft);display:flex;align-items:center;justify-content:center;flex:none"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#b23d34" stroke-width="1.7"><path d="M11 3l7 3v5c0 4.2-3 7.8-7 9-4-1.2-7-4.8-7-9V6z"/><path d="M11 8v4M11 14.5v.5"/></svg></div>
+          <div><h3 style="font-size:15.5px">Antrean Prioritas Pemeriksaan — Pengawasan Berbasis Risiko</h3><p class="cap" style="margin-top:4px">Emiten zona merah mengalir otomatis ke daftar prioritas OJK (POJK 12/2025), diurutkan menurut risiko divergensi.</p></div>
+        </div>
+        <div id="flags"></div>
+      </section>
+
+      <section class="view" id="v-lit">
+        <div class="lit-hero">
+          <div class="l"><div class="k">Sorotan</div><h3>Greenwashing dalam 3 menit</h3><p>Pahami mengapa laporan keberlanjutan yang tebal belum tentu jujur — dan bagaimana membaca skor kredibilitas untuk melihat perbedaannya.</p><button class="btn pri" style="margin-top:18px" onclick="openArt(0)">Tonton sekarang ▸</button></div>
+          <div class="r" style="background:linear-gradient(150deg,#C8E0CA,#9FCBA6)"><div class="play" onclick="openArt(0)"><svg width="26" height="26" viewBox="0 0 24 24" fill="#145858"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <div class="sec-h"><div class="k">Panduan Singkat</div><h2>Bacaan untuk semua orang</h2><p>Materi terbuka untuk investor ritel, mahasiswa, dan publik — karena kepercayaan pasar butuh pemahaman, bukan sekadar angka.</p></div>
+        <div class="artgrid" id="artGrid"></div>
+        <div class="sec-h"><div class="k">Video Penjelas</div><h2>Belajar cepat lewat video</h2></div>
+        <div class="vidgrid" id="vidGrid"></div>
+        <div class="grid g-2" style="margin-top:24px">
+          <div class="card"><div class="chead"><div><h3>Glosarium ESG</h3><div class="cap">Istilah penting, dijelaskan sederhana</div></div></div><div class="gloss" id="gloss"></div></div>
+          <div class="card"><div class="chead"><div><h3>Perpustakaan Sumber Tepercaya</h3><div class="cap">Regulasi & standar resmi, dikurasi</div></div></div><div id="srcList"></div></div>
+        </div>
+      </section>
+
+      <section class="view" id="v-method">
+        <div class="steps" style="margin-bottom:18px">
+          <div class="stp"><div class="n">01</div><h4>Menarik bukti eksternal</h4><p>Teks laporan, emisi satelit Climate TRACE, dan rekam sanksi KLHK ditarik tanpa meminta data tambahan dari emiten.</p></div>
+          <div class="stp"><div class="n">02</div><h4>Mengunci integritas data</h4><p>Setiap titik data di-<i>hash</i> & di-<i>timestamp</i> pada <i>ledger</i>, mencegah edit retroaktif & perhitungan ganda kredit karbon.</p></div>
+          <div class="stp"><div class="n">03</div><h4>Mengukur Kesenjangan Kredibilitas</h4><p>AI (FinBERT-ESG + A3CG, diperkuat RAG) mengukur gap finansial & gap dampak simultan + <i>confidence score</i>.</p></div>
+          <div class="stp"><div class="n">04</div><h4>Menerbitkan skor publik</h4><p>Skor 0–100 tayang di keterbukaan informasi BEI; zona merah jadi prioritas pengawasan OJK.</p></div>
+        </div>
+        <div class="card"><div class="chead"><div><h3>Delapan Prinsip Keuangan Berkelanjutan yang Diverifikasi</h3><div class="cap">Bobot mengikuti POJK 51/2017 & SEOJK 16/2021 — diuji terhadap bukti, bukan sekadar keberadaan pengungkapan</div></div></div>
+          <div class="prin" id="prin"></div>
+          <div class="note"><b>Keadilan prosedural.</b> Metodologi dibuka penuh & setiap emiten berskor merah berhak mengajukan keberatan sebelum publikasi final — pengaman terhadap <i>assurance-washing</i>. PRISMA menilai <b>kredibilitas klaim</b>, bukan kinerja; ia melengkapi, bukan menggantikan, rating seperti MSCI atau Sustainalytics.</div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="scrim" id="scrim" onclick="closeDrawer()"></div>
+<aside class="drawer" id="drawer"><div id="dContent"></div></aside>
+<div class="modal" id="modal"><div class="mbg" onclick="closeModal()"></div><div class="mcard" id="modalCard"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const RAW=[
+ ["GTEN","Geotermal Energi Tbk","Energi Panas Bumi",91,7,9,5,3,[["Penurunan intensitas emisi 12% (2024)","ok"],["Target netral karbon 2035 berpeta jalan","ok"],["Restorasi lahan pascabor terverifikasi satelit","ok"]],700,150,1.1],
+ ["ESBR","Energi Surya Baru Tbk","Energi Terbarukan",88,9,11,6,2,[["Kapasitas PLTS sesuai laporan","ok"],["Kerja lokal terverifikasi","ok"],["Efisiensi air masih rencana","ret"]],250,250,1.3],
+ ["BHSN","Bank Hijau Sentosa Tbk","Perbankan",83,11,14,7,1,[["Pembiayaan hijau 24% sesuai RAKB","ok"],["KUR inklusif terverifikasi","ok"],["Scope 3 pembiayaan belum penuh","ret"]],430,260,0.8],
+ ["KSHT","Konsumer Sehat Tbk","Barang Konsumsi",79,14,16,8,0,[["Kemasan daur ulang 60% sesuai","ok"],["Pengurangan air sebagian","ret"],["Rantai pasok bebas deforestasi belum terbukti","div"]],470,255,1.0],
+ ["TDNU","Telekom Digital Nusantara Tbk","Telekomunikasi",77,13,19,7,2,[["Efisiensi pusat data sesuai","ok"],["Jangkauan digital inklusif terverifikasi","ok"],["Limbah elektronik minim data","ret"]],455,250,0.9],
+ ["FRSH","Farmasi Sehat Tbk","Farmasi",74,16,22,9,-1,[["Limbah B3 sesuai klaim","ok"],["Uji etis terverifikasi","ok"],["Emisi produksi lebih tinggi","div"]],445,248,1.0],
+ ["AGPN","Agri Pangan Tbk","Agrikultur",71,18,24,10,1,[["Pertanian regeneratif berjalan","ok"],["Pupuk berkelanjutan sebagian","ret"],["Konversi lahan tak sesuai satelit","div"]],540,210,1.6],
+ ["RMBS","Ritel Maju Bersama Tbk","Ritel",68,19,27,9,-2,[["Toko hemat energi sebagian","ret"],["Pengurangan plastik berjalan","ok"],["Rantai pasok minim bukti","div"]],460,258,0.9],
+ ["PHAB","Properti Hijau Abadi Tbk","Properti",64,22,30,11,0,[["Sertifikasi bangunan hijau valid","ok"],["Efisiensi energi dilebihkan","div"],["Dampak konstruksi minim ungkap","ret"]],452,252,1.1],
+ ["TXWN","Tekstil Warna Tbk","Tekstil",58,26,38,12,-3,[["Air limbah tak sesuai sanksi KLHK","div"],["Daur ulang serat terbatas","ret"],["Pewarna ramah lingkungan belum terbukti","div"]],448,250,1.4],
+ ["PTAG","Petrokimia Anugerah Tbk","Kimia",52,30,44,13,-2,[["Penurunan emisi bertentangan satelit","div"],["Teknologi bersih masih rencana","ret"],["Insiden pencemaran tak diungkap","div"]],435,247,1.8],
+ ["BUPD","Baja Utama Persada Tbk","Logam & Baja",47,34,50,14,-1,[["Emisi Scope 1 di atas dilaporkan","div"],["Efisiensi tungku tak terverifikasi","div"],["Rehabilitasi hanya naratif","ret"]],520,205,2.1],
+ ["KRJY","Kertas Rimba Jaya Tbk","Kertas & Pulp",41,38,57,15,-4,[["Nol deforestasi dibantah satelit","div"],["Sanksi KLHK tak diungkap","div"],["Sertifikasi lestari kedaluwarsa","div"]],210,240,2.4],
+ ["NTMK","Nikel Tambang Makmur Tbk","Pertambangan Nikel",37,41,60,14,-3,[["Deforestasi melebihi laporan","div"],["Tailing bertentangan sanksi","div"],["Reklamasi tak terverifikasi","div"]],640,215,2.6],
+ ["BEPR","Bara Energi Prima Tbk","Pertambangan Batubara",31,45,66,13,-5,[["Transisi energi tanpa anggaran","div"],["Emisi melampaui narasi","div"],["Kredit karbon terindikasi ganda","div"]],560,230,3.0],
+ ["SLNU","Sawit Lestari Nusantara Tbk","Perkebunan (CPO)",28,47,69,12,-2,[["Bebas deforestasi dibantah satelit","div"],["Kebakaran lahan tak diungkap","div"],["Sertifikasi tak mencakup seluruh kebun","div"]],240,235,2.9],
+];
+const LOGO_COLORS=["#2F9E6B","#2E8B7E","#145858","#7A5EA8","#C88A2A","#5B8C3A","#B0553F","#417C86","#8A6A22","#A0475F","#4C6EAD","#1C7B72"];
+const DATA=RAW.map((r,i)=>({tk:r[0],nm:r[1],sec:r[2],score:r[3],fin:r[4],imp:r[5],conf:r[6],trend:r[7],claims:r[8],mx:r[9],my:r[10],em:r[11],ini:r[0].slice(0,2),col:LOGO_COLORS[i%LOGO_COLORS.length]}));
+DATA.forEach((d,i)=>{d.hash="0x"+Array.from({length:40},()=>"0123456789abcdef"[Math.floor(Math.random()*16)]).join("");
+  d.ts="2026-06-"+String(9+(i%19)).padStart(2,"0")+"T0"+(i%9)+":"+String(10+i).slice(-2)+":00Z";
+  const b=d.score;d.hist=[b-d.trend*3,b-5+(i%3),b-2,b-1,b-(d.trend<0?1:-1),b];});
+const MARKET_TREND=[57,58,56,59,61,60,62,61,63,62,64,63];
+const zoneOf=s=>s>=75?"g":s>=50?"y":"r";const zName={g:"Hijau",y:"Kuning",r:"Merah"};
+const zClr={g:"#2F9E6B",y:"#F7B318",r:"#D9564C"};
+const sColor=s=>s>=75?"var(--green)":s>=50?"var(--amber)":"var(--red)";
+let sortKey="score",sortDir=-1,curZone="all",curView="home";
+const secSel=document.getElementById("secSel");
+[...new Set(DATA.map(d=>d.sec))].sort().forEach(s=>{const o=document.createElement("option");o.value=s;o.textContent=s;secSel.appendChild(o);});
+function ico(bg,svg){return `<div class="ico" style="background:${bg}">${svg}</div>`;}
+function renderDash(){
+  const n=DATA.length,avg=Math.round(DATA.reduce((a,d)=>a+d.score,0)/n),red=DATA.filter(d=>zoneOf(d.score)==="r").length,rd=avg;
+  document.getElementById("kpis").innerHTML=`
+    <div class="card kpi">${ico('var(--sage-soft)','<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#145858" stroke-width="1.7"><path d="M4 18V9M11 18V4M18 18v-6"/></svg>')}<div><div class="lbl">Emiten dinilai</div><div class="big">${n}</div><div class="delta up">tercatat di BEI</div></div></div>
+    <div class="card kpi"><div class="ringwrap"><svg width="56" height="56" viewBox="0 0 42 42"><circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--ring)" stroke-width="5"/><circle cx="21" cy="21" r="15.9" fill="none" stroke="${sColor(avg)}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${rd} ${100-rd}" stroke-dashoffset="25" transform="rotate(-90 21 21)"/></svg><div class="rv">${avg}</div></div><div><div class="lbl">Skor rata-rata</div><div class="big">${avg}<small>/100</small></div><div class="delta up">▲ 2 vs lalu</div></div></div>
+    <div class="card kpi">${ico('var(--red-soft)','<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#b23d34" stroke-width="1.7"><path d="M11 3l7 3v5c0 4.2-3 7.8-7 9-4-1.2-7-4.8-7-9V6z"/></svg>')}<div><div class="lbl">Zona merah</div><div class="big" style="color:var(--red)">${red}</div><div class="delta dn">prioritas OJK</div></div></div>
+    <div class="card kpi">${ico('var(--gold-soft)','<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#a8790d" stroke-width="1.7"><path d="M11 2l7 3v5c0 4-3 7.6-7 9-4-1.4-7-5-7-9V5z"/><path d="M8 11l2 2 4-4"/></svg>')}<div><div class="lbl">Terverifikasi</div><div class="big" style="color:var(--gold-d)">100<small>%</small></div><div class="delta up">rantai bukti immutable</div></div></div>`;
+  const W=560,H=190,mn=Math.min(...MARKET_TREND)-4,mx=Math.max(...MARKET_TREND)+4,px=i=>i/(MARKET_TREND.length-1)*W,py=v=>H-((v-mn)/(mx-mn))*(H-24)-12;
+  const line=MARKET_TREND.map((v,i)=>`${px(i)},${py(v)}`).join(" ");
+  document.getElementById("trend").innerHTML=`<svg class="trend-svg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2F9E6B" stop-opacity=".22"/><stop offset="1" stop-color="#2F9E6B" stop-opacity="0"/></linearGradient></defs>${[0,.5,1].map(f=>`<line x1="0" y1="${12+f*(H-24)}" x2="${W}" y2="${12+f*(H-24)}" stroke="#EEF3EE" stroke-width="1"/>`).join("")}<polygon points="0,${H} ${line} ${W},${H}" fill="url(#ag)"/><polyline points="${line}" fill="none" stroke="#2F9E6B" stroke-width="2.6" stroke-linejoin="round"/><circle cx="${px(11)}" cy="${py(MARKET_TREND[11])}" r="4" fill="#145858" stroke="#fff" stroke-width="2"/></svg><div class="tlabels">${["Jul","Ags","Sep","Okt","Nov","Des","Jan","Feb","Mar","Apr","Mei","Jun"].map(m=>`<span>${m}</span>`).join("")}</div>`;
+  const cnt={g:0,y:0,r:0};DATA.forEach(d=>cnt[zoneOf(d.score)]++);let off=25;const seg=[["g",cnt.g],["y",cnt.y],["r",cnt.r]];
+  let s=`<circle cx="21" cy="21" r="15.9" fill="none" stroke="var(--ring)" stroke-width="6"/>`;
+  seg.forEach(([k,c])=>{const p=c/n*100;s+=`<circle cx="21" cy="21" r="15.9" fill="none" stroke="${zClr[k]}" stroke-width="6" stroke-dasharray="${p} ${100-p}" stroke-dashoffset="${off}" transform="rotate(-90 21 21)"/>`;off-=p;});
+  s+=`<text x="21" y="20.4" text-anchor="middle" font-size="7" font-weight="800" fill="#123B37" font-family="Plus Jakarta Sans">${n}</text><text x="21" y="26" text-anchor="middle" font-size="3.1" fill="#5E7A73" font-family="Plus Jakarta Sans">emiten</text>`;
+  document.getElementById("donut").innerHTML=s;
+  document.getElementById("donutLeg").innerHTML=seg.map(([k,c])=>`<div class="it"><span class="sw" style="background:${zClr[k]}"></span>${zName[k]} <b style="margin-left:2px">${c}</b><span class="pc">${Math.round(c/n*100)}%</span></div>`).join("");
+  const bySec={};DATA.forEach(d=>{(bySec[d.sec]=bySec[d.sec]||[]).push(d.score);});
+  const arr=Object.entries(bySec).map(([s,v])=>[s,Math.round(v.reduce((a,b)=>a+b)/v.length)]).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  document.getElementById("sectors").innerHTML=arr.map(([s,v])=>`<div class="sbar"><span class="nm">${s}</span><span class="tk"><i style="width:${v}%;background:${sColor(v)}"></i></span><span class="v">${v}</span></div>`).join("");
+  const mv=[...DATA].sort((a,b)=>Math.abs(b.trend)-Math.abs(a.trend)).slice(0,5);
+  document.getElementById("movers").innerHTML=mv.map(d=>{const cls=d.trend>0?"up":d.trend<0?"dn":"fl",sym=d.trend>0?"▲":d.trend<0?"▼":"—";return `<div class="mv" onclick="openDrawer('${d.tk}')"><div class="logo-sq" style="background:${d.col}">${d.ini}</div><div class="info"><div class="tk">${d.tk}</div><div class="nm">${d.nm}</div></div><div class="d ${cls}">${sym} ${Math.abs(d.trend)}</div></div>`;}).join("");
+  const top=[...DATA].sort((a,b)=>b.score-a.score).slice(0,5);
+  document.getElementById("miniboard").innerHTML=top.map(d=>{const z=zoneOf(d.score);return `<div class="mv" onclick="openDrawer('${d.tk}')"><div class="logo-sq" style="background:${d.col}">${d.ini}</div><div class="info"><div class="tk">${d.tk}</div><div class="nm">${d.sec}</div></div><span class="zone ${z}" style="font-size:11px"><span class="d"></span>${d.score}</span></div>`;}).join("");
+}
+function rowsData(){let a=[...DATA];const q=document.getElementById("q").value.trim().toLowerCase(),sec=secSel.value;
+  if(curZone!=="all")a=a.filter(d=>zoneOf(d.score)===curZone);if(sec!=="all")a=a.filter(d=>d.sec===sec);
+  if(q)a=a.filter(d=>d.tk.toLowerCase().includes(q)||d.nm.toLowerCase().includes(q));
+  a.sort((x,y)=>{let vx=x[sortKey],vy=y[sortKey];if(sortKey==="name"){vx=x.nm;vy=y.nm;}if(typeof vx==="string")return sortDir*vx.localeCompare(vy);return sortDir*(vx-vy);});return a;}
+function renderBoard(){const a=rowsData(),tb=document.getElementById("rows");tb.innerHTML="";
+  a.forEach((d,i)=>{const z=zoneOf(d.score);const tr=document.createElement("tr");tr.onclick=()=>openDrawer(d.tk);
+    const tc=d.trend>0?"up":d.trend<0?"dn":"fl",ts=d.trend>0?"▲":d.trend<0?"▼":"—";
+    tr.innerHTML=`<td class="mono" style="color:var(--faint)">${String(i+1).padStart(2,"0")}</td><td><div class="emi"><div class="logo-sq" style="background:${d.col}">${d.ini}</div><div><div class="tk">${d.tk}</div><div class="nm">${d.nm}</div></div></div></td><td class="hide"><span class="sect">${d.sec}</span></td><td><div class="scorec"><span class="v" style="color:${sColor(d.score)}">${d.score}</span><span class="tk"><i style="width:${d.score}%;background:${sColor(d.score)}"></i></span></div></td><td><span class="zone ${z}"><span class="d"></span>${zName[z]}</span></td><td class="num hide">${d.fin}</td><td class="num hide">${d.imp}</td><td class="num"><span class="tr ${tc}">${ts} ${Math.abs(d.trend)}</span></td><td class="hide"><svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 4l4 4-4 4"/></svg></td>`;
+    tb.appendChild(tr);});
+  document.getElementById("count").textContent=`${a.length} emiten`;}
+function setZone(b){document.querySelectorAll('[data-z]').forEach(x=>x.className="chip");const z=b.dataset.z;b.className="chip on"+(z==="g"?" g":z==="y"?" y":z==="r"?" r":"");curZone=z;renderBoard();}
+document.querySelectorAll('#v-board thead th[data-k]').forEach(th=>th.onclick=()=>{const k=th.dataset.k;if(sortKey===k)sortDir*=-1;else{sortKey=k;sortDir=k==="name"?1:-1;}document.querySelectorAll('#v-board thead th').forEach(x=>x.classList.remove('sorted'));th.classList.add('sorted');renderBoard();});
+const cmpA=document.getElementById("cmpA"),cmpB=document.getElementById("cmpB");
+DATA.forEach(d=>{cmpA.add(new Option(d.tk+" — "+d.nm,d.tk));cmpB.add(new Option(d.tk+" — "+d.nm,d.tk));});
+cmpA.value="GTEN";cmpB.value="SLNU";
+function bar(lbl,va,vb,max,inv){const ca=inv?(va<20?zClr.g:va<35?zClr.y:zClr.r):sColor(va),cb=inv?(vb<20?zClr.g:vb<35?zClr.y:zClr.r):sColor(vb);
+  return `<div style="display:grid;grid-template-columns:1fr 130px 1fr;gap:12px;align-items:center;margin:13px 0">
+    <div style="display:flex;align-items:center;gap:8px;justify-content:flex-end"><span class="mono" style="font-size:12px">${va}</span><span style="flex:1;max-width:150px;height:9px;border-radius:99px;background:var(--ring);overflow:hidden;transform:scaleX(-1)"><i style="display:block;height:100%;width:${va/max*100}%;background:${ca}"></i></span></div>
+    <div style="text-align:center;font-size:11.5px;color:var(--muted);font-weight:700">${lbl}</div>
+    <div style="display:flex;align-items:center;gap:8px"><span style="flex:1;max-width:150px;height:9px;border-radius:99px;background:var(--ring);overflow:hidden;display:block"><i style="display:block;height:100%;width:${vb/max*100}%;background:${cb}"></i></span><span class="mono" style="font-size:12px">${vb}</span></div></div>`;}
+function cmpHead(d){const z=zoneOf(d.score);return `<div class="cmp-card"><div class="logo-sq" style="background:${d.col};width:48px;height:48px;border-radius:14px;font-size:16px;margin:0 auto 10px">${d.ini}</div><div class="mono" style="font-weight:700">${d.tk}</div><div style="font-size:12px;color:var(--muted);margin-bottom:8px">${d.nm}</div><div class="big" style="color:${sColor(d.score)}">${d.score}</div><div style="margin-top:8px"><span class="zone ${z}"><span class="d"></span>Zona ${zName[z]}</span></div><div style="font-size:11px;color:var(--muted);margin-top:8px">${d.sec}</div></div>`;}
+function renderCompare(){const a=DATA.find(d=>d.tk===cmpA.value),b=DATA.find(d=>d.tk===cmpB.value);
+  document.getElementById("cmpBody").innerHTML=`<div class="cmp-body" style="margin-bottom:18px">${cmpHead(a)}${cmpHead(b)}</div><div style="border-top:1px solid var(--line);padding-top:16px">${bar("Skor Kredibilitas",a.score,b.score,100,false)}${bar("Gap Finansial",a.fin,b.fin,70,true)}${bar("Gap Dampak",a.imp,b.imp,70,true)}${bar("Ketidakpastian ±",a.conf,b.conf,20,true)}</div><div class="note" style="margin-top:16px">Skor lebih tinggi & gap lebih kecil menandakan klaim lebih kredibel. Untuk gap dampak, hijau berarti klaim dampak selaras dengan bukti satelit & sanksi.</div>`;}
+function renderMap(){
+  const isl=`<path d="M110 210 Q150 150 210 180 Q260 210 230 260 Q190 300 140 270 Q95 250 110 210Z" fill="#C8E0CA" stroke="#A9CDAE" stroke-width="1.5"/><path d="M380 250 Q470 220 560 250 Q620 270 560 300 Q470 320 400 300 Q360 285 380 250Z" fill="#C8E0CA" stroke="#A9CDAE" stroke-width="1.5"/><path d="M470 150 Q560 120 640 165 Q690 200 620 240 Q540 260 490 220 Q450 190 470 150Z" fill="#C8E0CA" stroke="#A9CDAE" stroke-width="1.5"/><path d="M630 180 Q680 150 720 200 Q740 240 700 270 Q660 250 640 220 Q620 200 630 180Z" fill="#C8E0CA" stroke="#A9CDAE" stroke-width="1.5"/><path d="M760 180 Q840 160 860 220 Q870 270 810 280 Q760 260 750 220 Q745 195 760 180Z" fill="#C8E0CA" stroke="#A9CDAE" stroke-width="1.5"/>`;
+  const dots=DATA.map(d=>{const z=zoneOf(d.score),r=6+d.em*3.2;return `<circle class="mapdot" cx="${d.mx}" cy="${d.my}" r="${r}" fill="${zClr[z]}" fill-opacity=".82" stroke="#fff" stroke-width="1.4" onclick="openDrawer('${d.tk}')"><title>${d.tk} — ${d.nm}</title></circle>`;}).join("");
+  document.getElementById("mapSvg").innerHTML=isl+dots;
+  const sorted=[...DATA].sort((a,b)=>b.em-a.em);
+  document.getElementById("mapList").innerHTML=sorted.map(d=>{const z=zoneOf(d.score);return `<div class="m" onclick="openDrawer('${d.tk}')"><span style="width:10px;height:10px;border-radius:50%;background:${zClr[z]};flex:none"></span><div class="info"><div class="em">${d.tk} · ${d.sec}</div><div class="ee">${d.nm}</div></div><div class="val" style="color:${zClr[z]}">${d.em.toFixed(1)} Mt</div></div>`;}).join("");
+}
+const CARBON=[["Reforestasi Sumatra Utara","Nature-based",120000,"Rp 92.000","ok"],["PLTP Geotermal Flores","Energi Terbarukan",88000,"Rp 88.500","ok"],["Mangrove Kalimantan","Blue Carbon",64000,"Rp 105.000","ok"],["Efisiensi Energi Industri Jawa","Efisiensi",42000,"Rp 79.000","ok"],["Kredit Batubara 'Transisi'","Avoidance",150000,"Rp 61.000","dup"],["Restorasi Gambut Riau","Nature-based",73000,"Rp 98.000","ok"],["Kredit HFC Impor","Industrial gas",56000,"Rp 40.000","rej"],["Biomassa Sulawesi","Energi Terbarukan",39000,"Rp 74.000","ok"]];
+function renderCarbon(){
+  const tot=CARBON.reduce((a,c)=>a+c[2],0),ok=CARBON.filter(c=>c[4]==="ok").reduce((a,c)=>a+c[2],0),dup=CARBON.filter(c=>c[4]!=="ok").length;
+  document.getElementById("carbonKpi").innerHTML=`
+    <div class="card kpi">${ico('var(--sage-soft)','<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#145858" stroke-width="1.7"><path d="M11 3C8 7 14 9 11 13M11 3C14 7 8 9 11 13M11 13v5"/></svg>')}<div><div class="lbl">Volume tercatat</div><div class="big">${(tot/1000).toFixed(0)}<small>k tCO₂e</small></div><div class="delta up">kumulatif 2025–2026</div></div></div>
+    <div class="card kpi">${ico('var(--gold-soft)','<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#a8790d" stroke-width="1.7"><path d="M11 2v18M6 6h8M6 16h8"/></svg>')}<div><div class="lbl">Nilai transaksi</div><div class="big">Rp 91,9<small>M</small></div><div class="delta up">per Feb 2026</div></div></div>
+    <div class="card kpi">${ico('var(--sage-soft)','<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#2f9e6b" stroke-width="1.7"><path d="M4 11l4 4 10-10"/></svg>')}<div><div class="lbl">Terverifikasi</div><div class="big" style="color:#1c7a51">${Math.round(ok/tot*100)}<small>%</small></div><div class="delta up">integritas terjaga</div></div></div>
+    <div class="card kpi">${ico('var(--red-soft)','<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="#b23d34" stroke-width="1.7"><circle cx="11" cy="11" r="8"/><path d="M11 7v5M11 15v.5"/></svg>')}<div><div class="lbl">Ditandai bermasalah</div><div class="big" style="color:var(--red)">${dup}</div><div class="delta dn">ganda / kualitas rendah</div></div></div>`;
+  const map={ok:["Terverifikasi","ok"],dup:["Terindikasi ganda","dup"],rej:["Ditolak","rej"]};
+  document.getElementById("carbonRows").innerHTML=CARBON.map((c,i)=>{const h="0x"+Array.from({length:8},()=>"0123456789abcdef"[(i*7+3)%16]).join("");return `<tr><td style="font-weight:600">${c[0]}</td><td class="hide"><span class="sect">${c[1]}</span></td><td class="num">${c[2].toLocaleString('id-ID')}</td><td class="num hide">${c[3]}</td><td><span class="cst-tag ${map[c[4]][1]}">${map[c[4]][0]}</span></td><td class="hide mono" style="font-size:11px;color:var(--faint)">${h}…</td></tr>`;}).join("");
+}
+function renderOJK(){const reds=DATA.filter(d=>zoneOf(d.score)==="r").sort((a,b)=>a.score-b.score);
+  document.getElementById("flags").innerHTML=reds.map((d,i)=>{const w=d.claims.find(c=>c[1]==="div");return `<div class="flag" onclick="openDrawer('${d.tk}')"><div class="pr">PRIORITAS<br>#${i+1}</div><div class="logo-sq" style="background:${d.col}">${d.ini}</div><div class="bd"><div class="t"><span class="mono" style="font-weight:700">${d.tk}</span><span class="sect">${d.sec}</span><span class="zone r" style="font-size:11px"><span class="d"></span>Gap dampak ${d.imp}</span></div><div class="rs">${w?w[0]:"Divergensi signifikan klaim vs bukti."}</div></div><div class="sc">${d.score}</div></div>`;}).join("");}
+document.getElementById("prin").innerHTML=["Investasi bertanggung jawab","Strategi & praktik bisnis berkelanjutan","Pengelolaan risiko sosial & lingkungan","Tata kelola","Komunikasi yang informatif","Inklusif","Pengembangan sektor unggulan prioritas","Koordinasi & kolaborasi"].map((p,i)=>`<div class="p"><span class="c">${i+1}</span>${p}</div>`).join("");
+const ARTS=[
+ {t:"Apa itu greenwashing, dan mengapa berbahaya?",c:"Dasar",r:"4 mnt",col:"linear-gradient(135deg,#145858,#1C7B72)",s:"Greenwashing adalah kesenjangan antara citra keberlanjutan yang ditampilkan dan kinerja nyata. Ia berbahaya karena menyesatkan alokasi modal: investor mengira mendanai perusahaan hijau, padahal tidak. PRISMA mengukur kesenjangan itu langsung terhadap bukti eksternal."},
+ {t:"Cara membaca ESG Credibility Score",c:"Panduan",r:"5 mnt",col:"linear-gradient(135deg,#2F9E6B,#5FB6A8)",s:"Skor 0–100 menilai seberapa layak dipercaya klaim sebuah emiten. Hijau (75–100) berarti klaim selaras bukti; kuning perlu tinjauan; merah menandakan divergensi. Skor ini menilai kejujuran, bukan kinerja."},
+ {t:"Double materiality dalam 5 menit",c:"Konsep",r:"5 mnt",col:"linear-gradient(135deg,#C88A2A,#F7B318)",s:"Materialitas ganda melihat dua arah: bagaimana isu ESG memengaruhi keuangan perusahaan (outside-in) DAN bagaimana perusahaan memengaruhi lingkungan/masyarakat (inside-out). PRISMA mengukur keduanya sebagai dua sumbu Kesenjangan Kredibilitas."},
+ {t:"Mengenal PSPK 1 & 2 dan IFRS S1/S2",c:"Regulasi",r:"6 mnt",col:"linear-gradient(135deg,#417C86,#2E8B7E)",s:"PSPK adalah standar pengungkapan keberlanjutan Indonesia yang berlaku 2027, mengadopsi baseline global IFRS S1/S2. Ia menyeragamkan format, tetapi berbasis single materiality dan belum mewajibkan assurance — di sinilah PRISMA melengkapi."},
+ {t:"Scope 1, 2, 3 emisi: apa bedanya?",c:"Dasar",r:"4 mnt",col:"linear-gradient(135deg,#5B8C3A,#2F9E6B)",s:"Scope 1 = emisi langsung; Scope 2 = dari listrik yang dibeli; Scope 3 = dari rantai nilai (biasanya 70–90% total). Scope 3 paling jarang dilaporkan karena paling sulit diverifikasi — justru area yang paling rawan greenwashing."},
+ {t:"Bagaimana blockchain menjaga integritas data",c:"Teknologi",r:"5 mnt",col:"linear-gradient(135deg,#4C6EAD,#417C86)",s:"Dengan mem-hash & memberi timestamp tiap data pada ledger, PRISMA membuat data tak bisa diubah diam-diam dan mencegah satu kredit karbon dihitung dua kali. Regulator ikut menjadi node sehingga bisa mengaudit real-time."},
+];
+const VIDS=[["Greenwashing 101","3:12","#145858"],["Membaca skor kredibilitas","4:05","#2F9E6B"],["Satelit & bukti emisi","3:40","#C88A2A"],["Webinar: masa depan PSPK","28:10","#417C86"]];
+const GLOSS=[["Greenwashing","Kesenjangan antara klaim keberlanjutan dan kinerja nyata perusahaan."],["Double materiality","Pengukuran dua arah: dampak isu ESG ke keuangan (outside-in) dan dampak perusahaan ke lingkungan/sosial (inside-out)."],["Assurance","Pemeriksaan independen atas laporan; PRISMA menawarkan verifikasi berkelanjutan berbasis mesin, bukan opini tahunan."],["Scope 3","Emisi dari rantai nilai perusahaan, biasanya 70–90% jejak karbon, paling sulit diverifikasi."],["Kesenjangan Kredibilitas","Jarak terukur antara klaim laporan dan realitas terverifikasi — primitif inti PRISMA."],["Provenance","Jejak asal-usul data yang terekam immutable di blockchain agar dapat diaudit ulang."]];
+const SRCS=[["POJK 51/POJK.03/2017","Otoritas Jasa Keuangan"],["SEOJK 16/SEOJK.04/2021","Otoritas Jasa Keuangan"],["PSPK 1 & 2","Dewan Standar Keberlanjutan IAI"],["IFRS S1 & S2","ISSB / IFRS Foundation"],["Climate TRACE","Koalisi Climate TRACE"],["Perpres 110/2025 (NEK)","Pemerintah RI"]];
+function renderLit(){
+  document.getElementById("artGrid").innerHTML=ARTS.map((a,i)=>`<div class="art" onclick="openArt(${i})"><div class="thumb" style="background:${a.col}"><span class="cat">${a.c}</span></div><div class="b"><h4>${a.t}</h4><div class="meta"><span>📖 ${a.r}</span><span>Baca →</span></div></div></div>`).join("");
+  document.getElementById("vidGrid").innerHTML=VIDS.map((v,i)=>`<div class="vid" onclick="openVid(${i})"><div class="th" style="background:${v[2]}"><div class="pl"><svg width="18" height="18" viewBox="0 0 24 24" fill="#145858"><path d="M8 5v14l11-7z"/></svg></div><span class="dur">${v[1]}</span></div><div class="b">${v[0]}</div></div>`).join("");
+  document.getElementById("gloss").innerHTML=GLOSS.map(([t,d])=>`<div class="item"><button class="q" onclick="this.parentElement.classList.toggle('open')">${t}<span class="ic"><svg width="16" height="16" viewBox="0 0 16 16" stroke="currentColor" stroke-width="1.8"><path d="M8 3v10M3 8h10"/></svg></span></button><div class="a">${d}</div></div>`).join("");
+  document.getElementById("srcList").innerHTML=SRCS.map(([n,o])=>`<div class="srcrow"><span class="ic"><svg width="17" height="17" viewBox="0 0 18 18" fill="none" stroke="#145858" stroke-width="1.5"><path d="M4 3h7l3 3v9H4z"/><path d="M11 3v3h3"/></svg></span><div class="info"><div class="nm">${n}</div><div class="og">${o}</div></div><span class="go">Buka →</span></div>`).join("");
+}
+function openArt(i){const a=ARTS[i];document.getElementById("modalCard").innerHTML=`<div class="close2" onclick="closeModal()"><svg width="15" height="15" viewBox="0 0 14 14" stroke="#145858" stroke-width="1.8"><path d="M2 2l10 10M12 2L2 12"/></svg></div><div class="mtop" style="background:${a.col}"><span class="cat">${a.c} · ${a.r}</span></div><div class="mb"><h3>${a.t}</h3><p>${a.s}</p><p style="color:var(--faint);font-size:12px">Artikel edukatif — bagian dari Ruang Literasi PRISMA (konten ilustratif).</p></div>`;openModal();}
+function openVid(i){const v=VIDS[i];document.getElementById("modalCard").innerHTML=`<div class="close2" onclick="closeModal()"><svg width="15" height="15" viewBox="0 0 14 14" stroke="#145858" stroke-width="1.8"><path d="M2 2l10 10M12 2L2 12"/></svg></div><div class="mtop" style="background:${v[2]};height:200px;align-items:center;justify-content:center"><div class="play"><svg width="26" height="26" viewBox="0 0 24 24" fill="#145858"><path d="M8 5v14l11-7z"/></svg></div></div><div class="mb"><h3>${v[0]}</h3><p>Durasi ${v[1]}. Video penjelas singkat untuk investor ritel & publik.</p><p style="color:var(--faint);font-size:12px">Pemutar video ilustratif (prototipe).</p></div>`;openModal();}
+function openModal(){document.getElementById("modal").classList.add("on");}
+function closeModal(){document.getElementById("modal").classList.remove("on");}
+function openDrawer(tk){const d=DATA.find(x=>x.tk===tk),z=zoneOf(d.score),c=sColor(d.score);
+  const W=460,H=54,mn=Math.min(...d.hist)-3,mx=Math.max(...d.hist)+3,sp=d.hist.map((v,i)=>`${i/(d.hist.length-1)*W},${H-((v-mn)/(mx-mn))*H}`).join(" ");
+  const claims=d.claims.map(([t,st])=>{const m={ok:["Terverifikasi","ok"],div:["Divergen","div"],ret:["Retoris","ret"]};return `<div class="claim"><div class="ct">${t}</div><span class="cst ${m[st][1]}">${m[st][0]}</span></div>`;}).join("");
+  const gc=v=>v<20?"var(--green)":v<35?"var(--amber)":"var(--red)";
+  document.getElementById("dContent").innerHTML=`<div class="dh"><button class="close" onclick="closeDrawer()"><svg width="15" height="15" viewBox="0 0 14 14" stroke="currentColor" stroke-width="1.8"><path d="M2 2l10 10M12 2L2 12"/></svg></button><div class="row1"><div class="logo-sq" style="background:${d.col};width:44px;height:44px;border-radius:12px;font-size:15px">${d.ini}</div><div><div class="tk">${d.tk}</div><h2>${d.nm}</h2><div class="meta">${d.sec} · Tercatat di BEI</div></div></div></div>
+    <div class="db">
+      <div class="dsec"><div class="st">ESG Credibility Score</div><div class="scorecard"><div class="top"><div class="sv" style="color:${c}">${d.score}<small>/100</small></div><span class="zone ${z}" style="font-size:12.5px"><span class="d"></span>Zona ${zName[z]}</span></div><div class="gsc"><div class="spectrum"></div><div class="mk" style="left:${d.score}%"></div><div class="tk2"><span>0</span><span>50</span><span>75</span><span>100</span></div></div></div></div>
+      <div class="dsec"><div class="st">Kesenjangan Kredibilitas — Double Materiality</div>
+        <div class="gap"><div class="gl"><b>Gap Materialitas Finansial <span class="ax">· outside-in</span></b><span class="gv">${d.fin} ±${d.conf}</span></div><div class="gt"><i style="width:${d.fin}%;background:${gc(d.fin)}"></i><span class="ci" style="left:${Math.max(0,d.fin-d.conf)}%;width:${d.conf*2}%"></span></div><div class="hint">Klaim risiko/peluang finansial vs realitas — diuji thd sinyal pasar & kepatuhan IDX/OJK.</div></div>
+        <div class="gap"><div class="gl"><b>Gap Materialitas Dampak <span class="ax">· inside-out</span></b><span class="gv">${d.imp} ±${d.conf}</span></div><div class="gt"><i style="width:${d.imp}%;background:${gc(d.imp)}"></i><span class="ci" style="left:${Math.max(0,d.imp-d.conf)}%;width:${d.conf*2}%"></span></div><div class="hint">Klaim dampak lingkungan/sosial vs realitas — diuji thd satelit Climate TRACE & sanksi KLHK.</div></div></div>
+      <div class="dsec"><div class="st">Sumber Bukti Eksternal</div><div class="evg">
+        <div class="ev"><div class="en"><span class="ic"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#145858" stroke-width="1.5"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2"/></svg></span>Climate TRACE</div><div class="ed">Emisi satelit resolusi fasilitas, independen.</div></div>
+        <div class="ev"><div class="en"><span class="ic"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#145858" stroke-width="1.5"><path d="M8 1.5l5 2v4c0 3-2 5.5-5 6.5-3-1-5-3.5-5-6.5v-4z"/></svg></span>Sanksi KLHK</div><div class="ed">Rekam jejak sanksi lingkungan resmi.</div></div>
+        <div class="ev"><div class="en"><span class="ic"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#145858" stroke-width="1.5"><path d="M2 13V9M6 13V4M10 13V7M14 13v-3"/></svg></span>Sinyal IDX/OJK</div><div class="ed">Data pasar & status kepatuhan.</div></div>
+        <div class="ev"><div class="en"><span class="ic"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="#145858" stroke-width="1.5"><path d="M8 1v14M3 4l5-3 5 3"/></svg></span>Teks Laporan</div><div class="ed">Klaim diklasifikasi FinBERT-ESG + A3CG.</div></div></div></div>
+      <div class="dsec"><div class="st">Verifikasi Klaim Utama</div>${claims}</div>
+      <div class="dsec"><div class="st">Riwayat Skor</div><div class="sparkc"><svg width="100%" height="54" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polyline points="${sp}" fill="none" stroke="${c}" stroke-width="2.6" stroke-linejoin="round"/></svg></div></div>
+      <div class="dsec"><div class="st">Jejak Blockchain (Provenance)</div><div class="ledger"><div class="r"><span class="k">Ledger</span><span class="v">PRISMA Consortium</span></div><div class="r"><span class="k">Hash</span><span class="v">${d.hash}</span></div><div class="r"><span class="k">Timestamp</span><span class="v">${d.ts}</span></div><div class="r"><span class="k">Status</span><span class="v">Immutable · audit real-time OJK</span></div></div></div>
+    </div>`;
+  document.getElementById("scrim").classList.add("on");document.getElementById("drawer").classList.add("on");}
+function closeDrawer(){document.getElementById("scrim").classList.remove("on");document.getElementById("drawer").classList.remove("on");}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeDrawer();closeModal();}});
+let toastT;
+function toast(m){const t=document.getElementById("toast");t.textContent=m;t.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("on"),2600);}
+const T={home:["Beranda","Lembaga Verifikasi Kredibilitas ESG Independen"],dash:["Ringkasan Pasar","Potret kredibilitas pengungkapan ESG emiten BEI"],board:["Peringkat Kredibilitas","Pasar diperingkat menurut kejujuran klaim"],compare:["Bandingkan Emiten","Sandingkan kredibilitas dua emiten"],map:["Peta Emisi","Bukti emisi fasilitas dari citra satelit"],carbon:["Kredit Karbon","Registri terverifikasi & pencegahan perhitungan ganda"],ojk:["Panel Pengawasan OJK","Antrean prioritas pemeriksaan berbasis risiko"],lit:["Ruang Literasi","Pahami ESG & kredibilitas untuk semua"],method:["Metodologi & Bukti","Cara penghitungan & mekanisme keberatan"]};
+let rendered={};
+function go(a){document.querySelectorAll('.nav a').forEach(x=>x.classList.remove('on'));a.classList.add('on');
+  const v=a.dataset.v;curView=v;document.querySelectorAll('.view').forEach(x=>x.classList.remove('on'));document.getElementById('v-'+v).classList.add('on');
+  document.getElementById('pgTitle').textContent=T[v][0];document.getElementById('pgSub').textContent=T[v][1];
+  document.getElementById('side').classList.remove('open');window.scrollTo({top:0});
+  if(!rendered[v]){rendered[v]=1;if(v==='compare')renderCompare();if(v==='map')renderMap();if(v==='carbon')renderCarbon();if(v==='lit')renderLit();}}
+renderDash();renderBoard();renderOJK();
+</script>
+</body>
+</html>
