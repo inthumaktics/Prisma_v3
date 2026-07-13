@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { Menu, X, Search, Bell } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PrismaLogo = () => (
   <svg className="logo-mark" viewBox="0 0 48 48" fill="none">
@@ -17,21 +18,22 @@ const PrismaLogo = () => (
 
 const navItems = [
   { to: '/', label: 'Beranda' },
-  { to: '/dashboard', label: 'Pasar' },
-  { to: '/ranking', label: 'Peringkat' },
-  { to: '/compare', label: 'Bandingkan Emiten' },
-  { to: '/map', label: 'Peta Emisi' },
-  { to: '/carbon', label: 'Kredit Karbon' },
+  { to: '/dashboard', label: 'Market' },
+  { to: '/ranking', label: 'Ranking' },
+  { to: '/compare', label: 'Compare' },
+  { to: '/map', label: 'Map' },
+  { to: '/carbon', label: 'Carbon Credit' },
   { to: '/literasi', label: 'Edukasi' },
-  { to: '/metodologi', label: 'Tentang' },
+  { to: '/metodologi', label: 'About' },
 ];
+
+const importantPaths = ['/', '/dashboard', '/ranking'];
 
 export default function TopNav() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const isHome = pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,7 +49,12 @@ export default function TopNav() {
 
   return (
     <>
-      <nav className={`topnav ${scrolled ? 'scrolled' : ''} ${isHome ? 'home' : ''}`}>
+      <motion.nav 
+        className={`topnav ${scrolled ? 'scrolled' : ''}`}
+        initial={{ y: -30, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      >
         <div className="topnav-container">
           <NavLink to="/" className="topnav-brand">
             <PrismaLogo />
@@ -57,41 +64,111 @@ export default function TopNav() {
             </div>
           </NavLink>
 
-          <div className={`topnav-links ${mobileOpen ? 'mobile-open' : ''}`}>
-            {navItems.map(({ to, label }) => (
-              <NavLink
-                key={to}
-                to={to}
-                end={to === '/'}
-                className={({ isActive }) => `topnav-link ${isActive ? 'active' : ''}`}
-              >
-                {label}
-              </NavLink>
-            ))}
+          <div className="topnav-links">
+            {navItems.map(({ to, label }) => {
+              const isActive = pathname === to || (to !== '/' && pathname.startsWith(to));
+              const isImportant = importantPaths.includes(to);
+              return (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end={to === '/'}
+                  className={({ isActive }) => `topnav-link ${isActive ? 'active' : ''} ${isImportant ? 'nav-important' : ''}`}
+                  style={{ position: 'relative' }}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-indicator"
+                      className="topnav-active-indicator"
+                      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                    />
+                  )}
+                  <span className="topnav-link-text">{label}</span>
+                </NavLink>
+              );
+            })}
           </div>
 
           <div className="topnav-actions">
-            <button className="topnav-icon-btn" aria-label="Search">
+            <motion.button 
+              className="topnav-icon-btn" 
+              aria-label="Search"
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+            >
               <Search size={18} />
-            </button>
-            <button className="topnav-icon-btn" aria-label="Notifications">
+            </motion.button>
+            <motion.button 
+              className="topnav-icon-btn" 
+              aria-label="Notifications"
+              whileHover={{ scale: 1.06 }}
+              whileTap={{ scale: 0.94 }}
+            >
               <Bell size={18} />
-            </button>
-            <button className="topnav-ojk-btn" onClick={() => navigate('/ojk')}>
+            </motion.button>
+            <motion.button 
+              className="topnav-ojk-btn" 
+              onClick={() => navigate('/ojk')}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
               Panel OJK
-            </button>
+            </motion.button>
           </div>
 
-          <button 
+          <motion.button 
             className="topnav-mobile-toggle" 
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+          </motion.button>
         </div>
-      </nav>
-      {mobileOpen && <div className="mobile-overlay" onClick={() => setMobileOpen(false)} />}
+      </motion.nav>
+
+      <AnimatePresence>
+        {mobileOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="mobile-overlay"
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.div
+              initial={{ x: '100%', opacity: 0.9 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: '100%', opacity: 0.9 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              className="mobile-drawer"
+            >
+              <div className="mobile-drawer-header">
+                <span className="mobile-drawer-title">Navigasi</span>
+                <button className="mobile-drawer-close" onClick={() => setMobileOpen(false)} aria-label="Close menu">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="mobile-drawer-links">
+                {navItems.map(({ to, label }) => (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    end={to === '/'}
+                    className={({ isActive }) => `topnav-link ${isActive ? 'active' : ''}`}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    {label}
+                  </NavLink>
+                ))}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }
