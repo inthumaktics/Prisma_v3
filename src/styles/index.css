@@ -2154,7 +2154,7 @@ td {
   opacity: 0;
   pointer-events: none;
   transition: transform .3s, opacity .3s;
-  z-index: 90;
+  z-index: 9999;
   box-shadow: var(--shadow-lg);
 }
 

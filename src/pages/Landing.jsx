@@ -93,43 +93,57 @@ function ScoreRing({ score = 84, size = 90 }) {
         strokeLinecap="round"
         transform={`rotate(-90 ${size / 2} ${size / 2})`}
       />
-      <text x="50%" y="50%" textAnchor="middle" dy="0.36em"
+      <text x="50%" y="44%" textAnchor="middle"
         fontSize="20" fontWeight="800" fill="#0E4443" fontFamily="'Plus Jakarta Sans', sans-serif">
         {score}
+      </text>
+      <text x="50%" y="68%" textAnchor="middle"
+        fontSize="9" fontWeight="700" fill="#7A9A93" fontFamily="'Plus Jakarta Sans', sans-serif">
+        /100
       </text>
     </svg>
   );
 }
 
 /* ─── Hero right-side dashboard cards ─── */
-function HeroDashboard({ avgScore, monitored }) {
-  const topCompany = companies[0];
-
+function HeroDashboard() {
   return (
     <div className="hero-dashboard">
-      {/* Row 1 */}
-      <div className="hd-row">
+      {/* Column 1 (Left) */}
+      <div className="hd-column">
         {/* ESG Credibility Score Card */}
         <div className="hd-card hd-card--score">
           <div className="hd-card-label">
             <span className="hd-verified-dot" />
             PRISMA VERIFIED
           </div>
-          <div className="hd-score-title">ESG Credibility</div>
           <div className="hd-score-body">
-            <div>
-              <div className="hd-score-num">{topCompany.score}</div>
+            <div className="hd-score-info">
+              <div className="hd-score-title">ESG Credibility</div>
               <div className="hd-score-sub">Verified Dec 2026</div>
             </div>
-            <ScoreRing score={topCompany.score} size={86} />
+            <ScoreRing score={84} size={80} />
           </div>
         </div>
 
+        {/* Market Snapshot */}
+        <div className="hd-card hd-card--market">
+          <div className="hd-market-header">MARKET SNAPSHOT</div>
+          <div className="hd-market-stats">
+            <MarketStat icon={<Database size={16} />} value={862} label="Monitored" color="#1C7B72" />
+            <MarketStat icon={<Activity size={16} />} value={67} label="Avg Score" color="#1C7B72" />
+            <MarketStat icon={<AlertTriangle size={16} />} value={142} label="High Risk" color="#F7B318" highlight />
+          </div>
+        </div>
+      </div>
+
+      {/* Column 2 (Right) */}
+      <div className="hd-column">
         {/* AI Audit Logs Card */}
         <div className="hd-card hd-card--audit">
           <div className="hd-audit-header">
             <div className="hd-audit-title">
-              <Cpu size={13} />
+              <Shield size={13} />
               AI AUDIT LOGS
             </div>
             <span className="hd-badge-active">Active</span>
@@ -138,25 +152,6 @@ function HeroDashboard({ avgScore, monitored }) {
             <AuditItem label="Satellite Verified" />
             <AuditItem label="Regulatory Cross-Checked" />
             <AuditItem label="Blockchain Recorded" />
-          </div>
-        </div>
-      </div>
-
-      {/* Row 2 */}
-      <div className="hd-row">
-        {/* Market Snapshot */}
-        <div className="hd-card hd-card--market">
-          <div className="hd-market-header">MARKET SNAPSHOT</div>
-          <div className="hd-market-stats">
-            <MarketStat icon={<Database size={16} />} value={monitored} label="Monitored" color="#1C7B72" />
-            <MarketStat icon={<Activity size={16} />} value={avgScore} label="Avg Score" color="#1C7B72" />
-            <MarketStat
-              icon={<AlertTriangle size={16} />}
-              value={companies.filter(c => c.score < 50).length}
-              label="High Risk"
-              color="#F7B318"
-              highlight
-            />
           </div>
         </div>
 
@@ -239,10 +234,10 @@ export default function Landing() {
 
             <div className="hero-v3-cta">
               <button className="btn-v3 btn-v3-primary" onClick={() => navigate('/ranking')}>
-                Lihat Peringkat
+                Explore ESG Rankings
               </button>
               <button className="btn-v3 btn-v3-secondary" onClick={() => navigate('/metodologi')}>
-                Pelajari Metodologi →
+                Learn How It Works →
               </button>
             </div>
 
@@ -260,7 +255,7 @@ export default function Landing() {
 
           {/* Right column – dashboard cards */}
           <div className="hero-v3-right">
-            <HeroDashboard avgScore={avg} monitored={companies.length} />
+            <HeroDashboard />
           </div>
         </div>
       </section>
@@ -338,7 +333,7 @@ export default function Landing() {
               <PreviewBox title="Kredit Karbon" desc="Registry blockchain untuk cegah double-counting" onClick={() => navigate('/carbon')} />
             </div>
             <button className="btn-v3 btn-v3-primary" onClick={() => navigate('/dashboard')}>
-              Buka Dashboard
+              View Market
             </button>
           </div>
         </div>

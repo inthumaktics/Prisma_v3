@@ -1,17 +1,20 @@
 import { useState, useMemo } from 'react';
+import { Eye } from 'lucide-react';
 import { companies, zoneOf, zName, sColor } from '../data/companies';
 import { useApp } from '../context/AppContext';
 import { ZonePill } from '../components/ui/Badges';
+import CompanyDetailModal from '../components/feedback/CompanyDetailModal';
 
 const sectors = [...new Set(companies.map(d => d.sec))].sort();
 
 export default function Ranking() {
-  const { openDrawer } = useApp();
   const [curZone, setCurZone] = useState('all');
   const [curSec,  setCurSec]  = useState('all');
   const [sortKey, setSortKey] = useState('score');
   const [sortDir, setSortDir] = useState(-1);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filtered = useMemo(() => {
     let a = [...companies];
@@ -30,6 +33,11 @@ export default function Ranking() {
   const handleSort = (key) => {
     if (sortKey === key) setSortDir(d => -d);
     else { setSortKey(key); setSortDir(key === 'name' ? 1 : -1); }
+  };
+
+  const handleOpenDetail = (company) => {
+    setSelectedCompany(company);
+    setIsModalOpen(true);
   };
 
   const zoneButtons = [
@@ -82,63 +90,77 @@ export default function Ranking() {
       </div>
 
       <div className="card p0">
-        <table>
-          <thead>
-            <tr>
-              <th style={{ width: 36 }}>#</th>
-              <Th col="name"  label="Emiten" />
-              <th className="hide">Sektor</th>
-              <Th col="score" label="Skor Kredibilitas" />
-              <th>Zona</th>
-              <th className="num hide">Gap Finansial <span className="ar">▲▼</span></th>
-              <th className="num hide">Gap Dampak <span className="ar">▲▼</span></th>
-              <Th col="trend" label="Tren" num />
-              <th className="hide" />
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((d, i) => {
-              const tc = d.trend > 0 ? 'up' : d.trend < 0 ? 'dn' : 'fl';
-              const ts = d.trend > 0 ? '▲' : d.trend < 0 ? '▼' : '—';
-              return (
-                <tr key={d.tk} onClick={() => openDrawer(d)}>
-                  <td className="mono" style={{ color: 'var(--faint)' }}>{String(i + 1).padStart(2, '0')}</td>
-                  <td>
-                    <div className="emi">
-                      <div className="logo-sq" style={{ background: d.col }}>{d.ini}</div>
-                      <div>
-                        <div className="tk">{d.tk}</div>
-                        <div className="nm">{d.nm}</div>
+        <div className="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th style={{ width: 36 }}>#</th>
+                <Th col="name"  label="Emiten" />
+                <th className="hide">Sektor</th>
+                <Th col="score" label="Skor Kredibilitas" />
+                <th>Zona</th>
+                <th className="num hide">Gap Finansial <span className="ar">▲▼</span></th>
+                <th className="num hide">Gap Dampak <span className="ar">▲▼</span></th>
+                <Th col="trend" label="Tren" num />
+                <th style={{ width: 130, textAlign: 'center' }}>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((d, i) => {
+                const tc = d.trend > 0 ? 'up' : d.trend < 0 ? 'dn' : 'fl';
+                const ts = d.trend > 0 ? '▲' : d.trend < 0 ? '▼' : '—';
+                return (
+                  <tr key={d.tk} className="ranking-row">
+                    <td className="mono" style={{ color: 'var(--faint)' }}>{String(i + 1).padStart(2, '0')}</td>
+                    <td>
+                      <div className="emi">
+                        <div className="logo-sq" style={{ background: d.col }}>{d.ini}</div>
+                        <div>
+                          <div className="tk">{d.tk}</div>
+                          <div className="nm">{d.nm}</div>
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  <td className="hide"><span className="sect">{d.sec}</span></td>
-                  <td>
-                    <div className="scorec">
-                      <span className="v" style={{ color: sColor(d.score) }}>{d.score}</span>
-                      <span className="tk"><i style={{ width: `${d.score}%`, background: sColor(d.score) }}/></span>
-                    </div>
-                  </td>
-                  <td><ZonePill score={d.score}/></td>
-                  <td className="num hide">{d.fin}</td>
-                  <td className="num hide">{d.imp}</td>
-                  <td className="num"><span className={`tr ${tc}`}>{ts} {Math.abs(d.trend)}</span></td>
-                  <td className="hide">
-                    <svg className="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.7">
-                      <path d="M6 4l4 4-4 4"/>
-                    </svg>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                    </td>
+                    <td className="hide"><span className="sect">{d.sec}</span></td>
+                    <td>
+                      <div className="scorec">
+                        <span className="v" style={{ color: sColor(d.score) }}>{d.score}</span>
+                        <span className="tk"><i style={{ width: `${d.score}%`, background: sColor(d.score) }}/></span>
+                      </div>
+                    </td>
+                    <td><ZonePill score={d.score}/></td>
+                    <td className="num hide">{d.fin}</td>
+                    <td className="num hide">{d.imp}</td>
+                    <td className="num"><span className={`tr ${tc}`}>{ts} {Math.abs(d.trend)}</span></td>
+                    <td style={{ textAlign: 'center' }}>
+                      <button 
+                        className="btn-action-detail"
+                        onClick={() => handleOpenDetail(d)}
+                        aria-label={`Lihat detail ${d.nm}`}
+                      >
+                        <Eye size={13} />
+                        <span>View</span>
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <p className="disc">
         Skor dari <b>Kesenjangan Kredibilitas</b> dua-sumbu, dibobot menurut 8 Prinsip Keuangan Berkelanjutan POJK 51/2017,
         diuji terhadap bukti eksternal yang di-<i>hash</i> pada <i>ledger</i>. Data ilustratif.
       </p>
+
+      {/* Center Detail Modal */}
+      <CompanyDetailModal 
+        company={selectedCompany} 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+      />
     </div>
   );
 }
