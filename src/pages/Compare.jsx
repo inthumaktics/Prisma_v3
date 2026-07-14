@@ -25,11 +25,11 @@ function bar(label, va, vb, max, inv) {
 }
 
 export default function Compare() {
-  const [tkA, setTkA] = useState('GTEN');
-  const [tkB, setTkB] = useState('SLNU');
+  const [tkA, setTkA] = useState(companies[0]?.tk || '');
+  const [tkB, setTkB] = useState(companies[1]?.tk || '');
 
-  const a = companies.find(d => d.tk === tkA);
-  const b = companies.find(d => d.tk === tkB);
+  const a = companies.find(d => d.tk === tkA) || companies[0];
+  const b = companies.find(d => d.tk === tkB) || companies[1];
 
   const Head = ({ d }) => {
     const z = zoneOf(d.score);

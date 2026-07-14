@@ -1399,6 +1399,12 @@ td {
   stroke-width: 2px;
 }
 
+.maplist {
+  max-height: 480px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
 .maplist .m {
   display: flex;
   align-items: center;
@@ -2313,7 +2319,7 @@ td {
 
 /* MapLibre Popups Premium Styling overrides */
 .maplibre-popup .maplibregl-popup-content {
-  background: var(--bg-card) !important;
+  background: #ffffff !important;
   color: var(--text) !important;
   border-radius: 12px !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
@@ -2333,16 +2339,16 @@ td {
 }
 
 .maplibre-popup .maplibregl-popup-anchor-top .maplibregl-popup-tip {
-  border-bottom-color: var(--line) !important;
+  border-bottom-color: #ffffff !important;
 }
 .maplibre-popup .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
-  border-top-color: var(--line) !important;
+  border-top-color: #ffffff !important;
 }
 .maplibre-popup .maplibregl-popup-anchor-left .maplibregl-popup-tip {
-  border-right-color: var(--line) !important;
+  border-right-color: #ffffff !important;
 }
 .maplibre-popup .maplibregl-popup-anchor-right .maplibregl-popup-tip {
-  border-left-color: var(--line) !important;
+  border-left-color: #ffffff !important;
 }
 
 @media (max-width: 1024px) {

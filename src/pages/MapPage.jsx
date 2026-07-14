@@ -4,29 +4,17 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import { companies, zoneOf, zClr, zName } from '../data/companies';
 import { useApp } from '../context/AppContext';
 
-const companyCoords = {
-  "GTEN": [107.80, -7.15],    // Garut / Bandung (Geothermal)
-  "ESBR": [107.60, -6.40],    // Purwakarta / West Java (Solar)
-  "BHSN": [106.8272, -6.1751], // Jakarta (Bank HQ)
-  "KSHT": [112.7521, -7.2575], // Surabaya (Konsumer)
-  "TDNU": [106.83, -6.21],    // Jakarta (Telekom)
-  "FRSH": [107.62, -6.90],    // Bandung (Farmasi)
-  "AGPN": [105.26, -5.45],    // Lampung / Sumatra (Agri)
-  "RMBS": [112.73, -7.24],    // Surabaya (Ritel)
-  "PHAB": [106.80, -6.18],    // Jakarta (Properti)
-  "TXWN": [107.55, -6.93],    // Bandung (Tekstil)
-  "PTAG": [112.65, -7.16],    // Gresik / Surabaya (Kimia)
-  "BUPD": [106.03, -6.01],    // Cilegon (Baja)
-  "KRJY": [101.45, 0.51],     // Pekanbaru / Riau (Kertas/Pulp)
-  "NTMK": [121.60, -4.05],    // Kolaka / Sulawesi (Nikel)
-  "BEPR": [117.15, -0.50],    // Samarinda / East Kalimantan (Batubara)
-  "SLNU": [98.67, 3.59]       // Medan / North Sumatra (Sawit)
-};
-
-const companiesWithCoords = companies.map(c => ({
-  ...c,
-  lngLat: companyCoords[c.tk] || [118.0, -2.5]
-}));
+const companiesWithCoords = companies.map(c => {
+  // Map SVG coordinates [mx, my] (box 900x420) to Indonesia geographic coordinates
+  // Longitude: 95.0 to 141.0
+  // Latitude: 6.0 to -11.0
+  const lng = 95.0 + (c.mx / 900) * 46.0;
+  const lat = 6.0 - (c.my / 420) * 17.0;
+  return {
+    ...c,
+    lngLat: [lng, lat]
+  };
+});
 
 const sorted = [...companiesWithCoords].sort((a, b) => b.em - a.em);
 

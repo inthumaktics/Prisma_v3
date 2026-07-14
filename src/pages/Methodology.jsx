@@ -6,6 +6,7 @@ import {
   Target, Award, Key, Globe, Database, Cpu, Activity,
   Users, CheckCircle, Info
 } from 'lucide-react';
+import { companies } from '../data/companies';
 
 // Animated Counter component that starts counting when it enters the viewport
 function AnimatedCounter({ value, duration = 1.5, suffix = "" }) {
@@ -414,7 +415,7 @@ export default function Methodology() {
         </div>
         <div className="about-impact-grid">
           <motion.div className="about-glass-card about-impact-card" variants={fadeInUp}>
-            <AnimatedCounter value="862+" />
+            <AnimatedCounter value={`${companies.length}+`} />
             <div className="about-impact-label">Companies Covered</div>
           </motion.div>
 

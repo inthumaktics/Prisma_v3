@@ -107,6 +107,9 @@ function ScoreRing({ score = 84, size = 90 }) {
 
 /* ─── Hero right-side dashboard cards ─── */
 function HeroDashboard() {
+  const avgScore = Math.round(companies.reduce((a, d) => a + d.score, 0) / companies.length);
+  const highRiskCount = companies.filter(c => c.score < 50).length;
+
   return (
     <div className="hero-dashboard">
       {/* Column 1 (Left) */}
@@ -130,9 +133,9 @@ function HeroDashboard() {
         <div className="hd-card hd-card--market">
           <div className="hd-market-header">MARKET SNAPSHOT</div>
           <div className="hd-market-stats">
-            <MarketStat icon={<Database size={16} />} value={862} label="Monitored" color="#1C7B72" />
-            <MarketStat icon={<Activity size={16} />} value={67} label="Avg Score" color="#1C7B72" />
-            <MarketStat icon={<AlertTriangle size={16} />} value={142} label="High Risk" color="#F7B318" highlight />
+            <MarketStat icon={<Database size={16} />} value={companies.length} label="Monitored" color="#1C7B72" />
+            <MarketStat icon={<Activity size={16} />} value={avgScore} label="Avg Score" color="#1C7B72" />
+            <MarketStat icon={<AlertTriangle size={16} />} value={highRiskCount} label="High Risk" color="#F7B318" highlight />
           </div>
         </div>
       </div>
