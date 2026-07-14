@@ -1,59 +1,218 @@
-import { companies, zoneOf, zClr } from '../data/companies';
+import { useEffect, useRef } from 'react';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
+import { companies, zoneOf, zClr, zName } from '../data/companies';
 import { useApp } from '../context/AppContext';
 
-const islands = [
-  "M110 210 Q150 150 210 180 Q260 210 230 260 Q190 300 140 270 Q95 250 110 210Z",
-  "M380 250 Q470 220 560 250 Q620 270 560 300 Q470 320 400 300 Q360 285 380 250Z",
-  "M470 150 Q560 120 640 165 Q690 200 620 240 Q540 260 490 220 Q450 190 470 150Z",
-  "M630 180 Q680 150 720 200 Q740 240 700 270 Q660 250 640 220 Q620 200 630 180Z",
-  "M760 180 Q840 160 860 220 Q870 270 810 280 Q760 260 750 220 Q745 195 760 180Z",
-];
+const companyCoords = {
+  "GTEN": [107.80, -7.15],    // Garut / Bandung (Geothermal)
+  "ESBR": [107.60, -6.40],    // Purwakarta / West Java (Solar)
+  "BHSN": [106.8272, -6.1751], // Jakarta (Bank HQ)
+  "KSHT": [112.7521, -7.2575], // Surabaya (Konsumer)
+  "TDNU": [106.83, -6.21],    // Jakarta (Telekom)
+  "FRSH": [107.62, -6.90],    // Bandung (Farmasi)
+  "AGPN": [105.26, -5.45],    // Lampung / Sumatra (Agri)
+  "RMBS": [112.73, -7.24],    // Surabaya (Ritel)
+  "PHAB": [106.80, -6.18],    // Jakarta (Properti)
+  "TXWN": [107.55, -6.93],    // Bandung (Tekstil)
+  "PTAG": [112.65, -7.16],    // Gresik / Surabaya (Kimia)
+  "BUPD": [106.03, -6.01],    // Cilegon (Baja)
+  "KRJY": [101.45, 0.51],     // Pekanbaru / Riau (Kertas/Pulp)
+  "NTMK": [121.60, -4.05],    // Kolaka / Sulawesi (Nikel)
+  "BEPR": [117.15, -0.50],    // Samarinda / East Kalimantan (Batubara)
+  "SLNU": [98.67, 3.59]       // Medan / North Sumatra (Sawit)
+};
 
-const sorted = [...companies].sort((a, b) => b.em - a.em);
+const companiesWithCoords = companies.map(c => ({
+  ...c,
+  lngLat: companyCoords[c.tk] || [118.0, -2.5]
+}));
+
+const sorted = [...companiesWithCoords].sort((a, b) => b.em - a.em);
 
 export default function MapPage() {
   const { openDrawer } = useApp();
+  const mapContainerRef = useRef(null);
+  const mapRef = useRef(null);
+  const markersRef = useRef({});
+
+  useEffect(() => {
+    if (mapRef.current) return;
+
+    // Initialize MapLibre GL Map
+    const map = new maplibregl.Map({
+      container: mapContainerRef.current,
+      style: {
+        version: 8,
+        sources: {
+          osm: {
+            type: 'raster',
+            tiles: [
+              'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+            ],
+            tileSize: 256,
+            attribution: '© OpenStreetMap contributors'
+          }
+        },
+        layers: [
+          {
+            id: 'osm-tiles',
+            type: 'raster',
+            source: 'osm',
+            minzoom: 0,
+            maxzoom: 19
+          }
+        ]
+      },
+      center: [118.0, -2.5], // Center of Indonesia
+      zoom: 4.6, // Fit Indonesian archipelago
+      minZoom: 4,
+      maxZoom: 15
+    });
+
+    // Add navigation controls (Zoom + Pan)
+    map.addControl(new maplibregl.NavigationControl({ showCompass: true }), 'top-right');
+
+    mapRef.current = map;
+
+    // Add markers for all companies
+    companiesWithCoords.forEach(c => {
+      const z = zoneOf(c.score);
+      const zoneClass = z === 'g' ? 'map-marker-green' : z === 'y' ? 'map-marker-yellow' : 'map-marker-red';
+
+      // Create Custom Pulse Element
+      const el = document.createElement('div');
+      el.className = `map-marker ${zoneClass}`;
+      el.style.backgroundColor = zClr[z];
+
+      // Create Popup Content
+      const popupContent = document.createElement('div');
+      popupContent.className = 'map-popup-card';
+      popupContent.innerHTML = `
+        <div style="font-size: 13px; font-weight: 700; margin-bottom: 2px; color: var(--text);">${c.nm}</div>
+        <div style="font-size: 11px; color: var(--muted); margin-bottom: 8px;">${c.sec}</div>
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 12px;">
+          <div>
+            <div style="font-size: 9px; color: var(--muted); text-transform: uppercase;">ESG Score</div>
+            <div style="font-size: 16px; font-weight: 800; color: ${zClr[z]};">${c.score}</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 9px; color: var(--muted); text-transform: uppercase;">Zona Kredibilitas</div>
+            <div style="font-size: 11px; font-weight: 600; color: ${zClr[z]};">${zName[z]}</div>
+          </div>
+        </div>
+
+        <div style="font-size: 10px; margin-bottom: 10px; display: flex; align-items: center; gap: 4px; color: var(--text);">
+          <span style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: ${zClr[z]};"></span>
+          <strong>Status:</strong> ${c.score >= 75 ? 'Terverifikasi Kredibel' : c.score >= 50 ? 'Butuh Perhatian' : 'Divergensi Tinggi'}
+        </div>
+
+        <button class="popup-detail-btn-${c.tk}" style="width: 100%; border: none; padding: 6px 12px; border-radius: 6px; background: var(--teal); color: white; cursor: pointer; font-size: 11px; font-weight: 600; text-align: center; transition: background 0.15s;">
+          Lihat Detail
+        </button>
+      `;
+
+      // Create Popup
+      const popup = new maplibregl.Popup({
+        closeButton: true,
+        closeOnClick: true,
+        className: 'maplibre-popup',
+        offset: 12
+      }).setDOMContent(popupContent);
+
+      // Bind detail button inside popup
+      popup.on('open', () => {
+        const btn = document.querySelector(`.popup-detail-btn-${c.tk}`);
+        if (btn) {
+          btn.addEventListener('click', () => {
+            openDrawer(c);
+          });
+        }
+      });
+
+      // Initialize Marker
+      const marker = new maplibregl.Marker({ element: el })
+        .setLngLat(c.lngLat)
+        .setPopup(popup)
+        .addTo(map);
+
+      markersRef.current[c.tk] = marker;
+    });
+
+    return () => {
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+      }
+    };
+  }, [openDrawer]);
+
+  const handleCompanyClick = (c) => {
+    if (mapRef.current) {
+      mapRef.current.flyTo({
+        center: c.lngLat,
+        zoom: 8,
+        essential: true,
+        duration: 1500
+      });
+      
+      const marker = markersRef.current[c.tk];
+      if (marker) {
+        // Toggle popup open
+        const popup = marker.getPopup();
+        if (popup && !popup.isOpen()) {
+          marker.togglePopup();
+        }
+      }
+    }
+  };
 
   return (
     <div className="view">
-      <div className="grid" style={{ gridTemplateColumns: '1.6fr 1fr', gap: 18 }}>
-        <div className="card">
-          <div className="chead">
+      <div className="map-grid">
+        <div className="card" style={{ display: 'flex', flexDirection: 'column' }}>
+          <div className="chead" style={{ marginBottom: 12 }}>
             <div>
-              <h3>Peta Emisi Fasilitas</h3>
-              <div className="cap">Titik emisi terpantau satelit — sumber: Climate TRACE (ilustratif)</div>
-            </div>
-            <div style={{ display: 'flex', gap: 12, fontSize: 11, color: 'var(--muted)' }}>
-              {[['var(--green)', 'Kredibel'], ['var(--amber)', 'Perhatian'], ['var(--red)', 'Divergen']].map(([bg, lbl]) => (
-                <span key={lbl}>
-                  <span style={{ display: 'inline-block', width: 9, height: 9, borderRadius: '50%', background: bg, marginRight: 5 }}/>
-                  {lbl}
-                </span>
-              ))}
+              <h3>Peta Kredibilitas ESG Indonesia</h3>
+              <div className="cap">Sebaran fasilitas emiten terpantau satelit secara interaktif</div>
             </div>
           </div>
-          <div className="mapwrap">
-            <svg viewBox="0 0 900 420" style={{ width: '100%', display: 'block' }}>
-              {islands.map((d, i) => (
-                <path key={i} d={d} fill="#C8E0CA" stroke="#A9CDAE" strokeWidth="1.5"/>
-              ))}
-              {companies.map(d => {
-                const z = zoneOf(d.score);
-                const r = 6 + d.em * 3.2;
-                return (
-                  <circle
-                    key={d.tk}
-                    className="mapdot"
-                    cx={d.mx} cy={d.my} r={r}
-                    fill={zClr[z]} fillOpacity=".82"
-                    stroke="#fff" strokeWidth="1.4"
-                    onClick={() => openDrawer(d)}
-                  >
-                    <title>{d.tk} — {d.nm}</title>
-                  </circle>
-                );
-              })}
-            </svg>
+          
+          <div ref={mapContainerRef} className="maplibre-wrap" style={{ flex: 1 }} />
+          
+          {/* Map Legend */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+            marginTop: 16, 
+            padding: '12px 16px', 
+            background: 'var(--bg-card-hover)', 
+            borderRadius: '8px',
+            border: '1px solid var(--line-2)',
+            flexWrap: 'wrap',
+            gap: 12
+          }}>
+            <div style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text)' }}>
+              Legenda Kredibilitas:
+            </div>
+            <div style={{ display: 'flex', gap: 16, fontSize: '11px', flexWrap: 'wrap' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span className="map-marker" style={{ display: 'inline-block', width: 10, height: 10, background: 'var(--green)', border: '1px solid #fff', boxShadow: 'none' }} />
+                <span>Tinggi (Score ≥ 75)</span>
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span className="map-marker" style={{ display: 'inline-block', width: 10, height: 10, background: 'var(--amber)', border: '1px solid #fff', boxShadow: 'none' }} />
+                <span>Sedang (Score 50-74)</span>
+              </span>
+              <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span className="map-marker" style={{ display: 'inline-block', width: 10, height: 10, background: 'var(--red)', border: '1px solid #fff', boxShadow: 'none' }} />
+                <span>Rendah (Score &lt; 50)</span>
+              </span>
+            </div>
           </div>
         </div>
 
@@ -61,14 +220,14 @@ export default function MapPage() {
           <div className="chead">
             <div>
               <h3>Fasilitas Terpantau</h3>
-              <div className="cap">Diurutkan menurut estimasi emisi</div>
+              <div className="cap">Klik untuk memperbesar lokasi peta</div>
             </div>
           </div>
           <div className="maplist">
             {sorted.map(d => {
               const z = zoneOf(d.score);
               return (
-                <div className="m" key={d.tk} onClick={() => openDrawer(d)}>
+                <div className="m" key={d.tk} onClick={() => handleCompanyClick(d)}>
                   <span style={{ width: 10, height: 10, borderRadius: '50%', background: zClr[z], flex: 'none' }}/>
                   <div className="info">
                     <div className="em">{d.tk} · {d.sec}</div>
@@ -82,9 +241,9 @@ export default function MapPage() {
         </div>
       </div>
 
-      <p className="disc">
-        Ukuran titik mencerminkan estimasi emisi; warna mencerminkan zona kredibilitas emiten.
-        Divergensi antara emisi tercitra dan yang dilaporkan menaikkan <b>gap dampak</b>. Posisi geografis bersifat ilustratif.
+      <p className="disc" style={{ marginTop: 16 }}>
+        Peta interaktif menggunakan data koordinat fasilitas riil di Indonesia.
+        Divergensi antara emisi tercitra satelit dan laporan ESG menentukan tingkat kredibilitas (warna penanda).
       </p>
     </div>
   );

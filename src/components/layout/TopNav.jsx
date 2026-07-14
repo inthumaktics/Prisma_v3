@@ -18,7 +18,7 @@ const PrismaLogo = () => (
 
 const navItems = [
   { to: '/', label: 'Beranda' },
-  { to: '/dashboard', label: 'Market' },
+  { to: '/market', label: 'Market' },
   { to: '/ranking', label: 'Ranking' },
   { to: '/compare', label: 'Compare' },
   { to: '/map', label: 'Map' },

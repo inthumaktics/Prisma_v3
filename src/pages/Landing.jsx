@@ -401,15 +401,6 @@ export default function Landing() {
           </div>
         </div>
       </section>
-
-      {/* ====== Footer ====== */}
-      <footer className="footer-v3">
-        <div className="container-v3">
-          <p className="footer-disclaimer">
-            PRISMA adalah gagasan/prototipe konsep untuk esai ilmiah. Nama, kontak, dan data emiten bersifat ilustratif.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }
