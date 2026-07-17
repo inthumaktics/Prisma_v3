@@ -12,6 +12,7 @@ const Carbon      = lazy(() => import('./pages/Carbon'));
 const OjkPanel    = lazy(() => import('./pages/OjkPanel'));
 const Literacy    = lazy(() => import('./pages/Literacy'));
 const Methodology = lazy(() => import('./pages/Methodology'));
+const Materiality = lazy(() => import('./pages/Materiality'));
 
 function AppShell() {
   return (
@@ -26,6 +27,7 @@ function AppShell() {
         <Route path="/carbon"     element={<Carbon />} />
         <Route path="/literasi"   element={<Literacy />} />
         <Route path="/metodologi" element={<Methodology />} />
+        <Route path="/company/:ticker/materiality" element={<Materiality />} />
       </Route>
 
       {/* Oversight Panel Layout (without footer) */}

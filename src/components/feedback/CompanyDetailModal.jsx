@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, Shield, AlertTriangle, HelpCircle, X, Download, Eye, FileText, Database, Activity, Globe, Award } from 'lucide-react';
+import { CheckCircle2, Shield, AlertTriangle, HelpCircle, X, Download, Eye, FileText, Database, Activity, Globe, Award, BarChart3 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { zoneOf, zName, sColor } from '../../data/companies';
 import { useApp } from '../../context/AppContext';
 
@@ -32,6 +33,7 @@ const claimStatus = {
 export default function CompanyDetailModal({ company: d, isOpen, onClose }) {
   const modalRef = useRef(null);
   const { showToast } = useApp();
+  const navigate = useNavigate();
 
   // Prevent scroll on body
   useEffect(() => {
@@ -277,6 +279,52 @@ export default function CompanyDetailModal({ company: d, isOpen, onClose }) {
                       </div>
                     ))}
                   </div>
+                </div>
+              </div>
+            </div>
+
+            {/* DOUBLE MATERIALITY ASSESSMENT SECTION */}
+            <div className="cd-assessment-section">
+              <div className="cd-assessment-card">
+                <h3 className="cd-assessment-title">Double Materiality Assessment</h3>
+                <p className="cd-assessment-subtitle">
+                  Penilaian dua arah berdasarkan kerangka Double Materiality untuk memverifikasi kredibilitas Sustainability Report perusahaan.
+                </p>
+                <div className="cd-assessment-grid">
+                  <div className="cd-summary-card">
+                    <span className="cd-summary-label">Impact Materiality</span>
+                    <span className="cd-summary-val">--</span>
+                    <span className="cd-summary-desc">Inside-Out Assessment</span>
+                  </div>
+                  <div className="cd-summary-card">
+                    <span className="cd-summary-label">Financial Materiality</span>
+                    <span className="cd-summary-val">--</span>
+                    <span className="cd-summary-desc">Outside-In Assessment</span>
+                  </div>
+                  <div className="cd-summary-card">
+                    <span className="cd-summary-label">Credibility Gap</span>
+                    <span className="cd-summary-val">--</span>
+                    <span className="cd-summary-desc">Waiting for Assessment</span>
+                  </div>
+                  <div className="cd-summary-card">
+                    <span className="cd-summary-label">Assessment Status</span>
+                    <div className="cd-summary-badge-wrapper">
+                      <span className="cd-badge-gray">Not Calculated</span>
+                    </div>
+                    <span className="cd-summary-desc">Waiting for Assessment</span>
+                  </div>
+                </div>
+                <div className="cd-assessment-btn-wrapper">
+                  <button 
+                    onClick={() => {
+                      navigate(`/company/${d.tk}/materiality`);
+                      onClose();
+                    }} 
+                    className="btn-prisma-green"
+                  >
+                    <BarChart3 size={16} />
+                    <span>Open Double Materiality Assessment</span>
+                  </button>
                 </div>
               </div>
             </div>
